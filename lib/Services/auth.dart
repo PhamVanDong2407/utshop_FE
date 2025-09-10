@@ -26,12 +26,16 @@ class Auth {
       Constant.PASSWORD,
     );
 
+    String? hashedPassword;
+    if (password != null) {
+      hashedPassword = Utils.generateMd5(password);
+    } else {
+      hashedPassword = passwordPreferences;
+    }
+
     Map<String, String> param = {
-      // "username": userName ?? userNamePreferences,
-      // "password":
-      //     password != null ? Utils.generateMd5(password) : passwordPreferences,
       "email": email ?? emailPreferences,
-      "password": password ?? passwordPreferences,
+      "password": hashedPassword,
     };
 
     try {

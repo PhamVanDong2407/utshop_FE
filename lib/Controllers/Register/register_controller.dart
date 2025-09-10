@@ -16,10 +16,11 @@ class RegisterController extends GetxController {
 
   Future<void> register() async {
     try {
+      final hashedPassword = Utils.generateMd5(password.text.trim());
       final body = {
         "name": fullName.text.trim(),
         "email": email.text.trim(),
-        "password": password.text.trim(),
+        "password": hashedPassword,
         "phone": phone.text.trim(),
       };
 
