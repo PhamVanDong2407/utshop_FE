@@ -15,14 +15,24 @@ class Splash extends StatelessWidget {
       body: Stack(
         alignment: Alignment.center,
         children: [
-          Container(color: AppColor.white),
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: AppColor.white,
+          ),
 
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset('assets/icons/logo.svg', width: 80, height: 80),
-              const SizedBox(height: 20),
-            ],
+          Positioned.fill(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/images/logoU.png', width: 100, height: 100),
+                const SizedBox(height: 20),
+                const Text(
+                  'Chào mừng bạn đến với UTShop',
+                  style: TextStyle(color: Colors.black, fontSize: 24),
+                ),
+              ],
+            ),
           ),
         ],
       ),
