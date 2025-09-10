@@ -8,7 +8,7 @@ class IntroductionController extends GetxController {
 
   final pages = [
     {
-      'title': "Chào mừng đến với UP Store",
+      'title': "Chào mừng đến với UTShop",
       'description':
           "Khám phá những sản phẩm tốt nhất với mức giá không thể tốt hơn.",
       'imagePath': "assets/images/onbo1.png",

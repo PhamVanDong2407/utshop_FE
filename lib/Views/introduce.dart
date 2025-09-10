@@ -16,7 +16,9 @@ class IntroductionScreen extends StatelessWidget {
           PageView.builder(
             itemCount: controller.pages.length,
             controller: controller.pageController,
-            onPageChanged: (index) => controller.currentPage.value = index,
+            onPageChanged: (index) {
+              controller.currentPage.value = index;
+            },
             itemBuilder: (context, index) {
               final page = controller.pages[index];
               return Introduce(
@@ -33,14 +35,19 @@ class IntroductionScreen extends StatelessWidget {
                     : Positioned(
                       bottom: 40,
                       left: 20,
-                      child: TextButton(
-                        onPressed: controller.skip,
-                        child: const Text(
-                          "Bỏ qua",
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
+                      child: SizedBox(
+                        width: 100,
+                        child: TextButton(
+                          onPressed: () {
+                            controller.skip();
+                          },
+                          child: const Text(
+                            "Bỏ qua",
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
@@ -50,27 +57,34 @@ class IntroductionScreen extends StatelessWidget {
             bottom: 40,
             right: 20,
             child: Obx(
-              () => TextButton(
-                onPressed: controller.next,
-                child: Text(
-                  controller.currentPage.value == controller.pages.length - 1
-                      ? "Kết thúc"
-                      : "Tiếp theo",
-                  style: const TextStyle(
-                    color: Colors.blue,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+              () => SizedBox(
+                width: 120,
+                child: TextButton(
+                  onPressed: () {
+                    controller.next();
+                  },
+                  child: Text(
+                    controller.currentPage.value == controller.pages.length - 1
+                        ? "Kết thúc"
+                        : "Tiếp theo",
+                    style: const TextStyle(
+                      color: Colors.blue,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
             ),
           ),
+          // SmoothPageIndicator
           Positioned(
             left: 0,
             right: 0,
             bottom: 50,
-            child: Obx(
-              () => Center(
+            child: SizedBox(
+              height: 20,
+              child: Center(
                 child: SmoothPageIndicator(
                   controller: controller.pageController,
                   count: controller.pages.length,
@@ -108,7 +122,15 @@ class Introduce extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset(imagePath, height: 300),
+        Image.asset(
+          imagePath,
+          height: 300,
+          errorBuilder:
+              (context, error, stackTrace) => const Text(
+                'Error loading image',
+                style: TextStyle(color: Colors.red),
+              ),
+        ),
         const SizedBox(height: 30),
         Text(
           title,
