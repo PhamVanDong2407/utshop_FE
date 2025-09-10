@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:utshop/Components/custom_dialog.dart';
 import 'package:utshop/Controllers/dashboard_controller.dart';
 import 'package:utshop/Global/app_color.dart';
-import 'package:utshop/Utils/device_helper.dart';
 import 'package:utshop/Views/Cart/cart.dart';
 import 'package:utshop/Views/Home/home.dart';
 import 'package:utshop/Views/Profile/profile.dart';
@@ -18,8 +18,22 @@ class Dashboard extends StatelessWidget {
 
   final controller = Get.put(DashboardController());
 
-  // Danh sách các màn hình tương ứng với các tab
   final List<Widget> _pages = [Home(), Wishlish(), Cart(), Profile()];
+
+  Widget _buildSvgIcon(String assetName, int index) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: SvgPicture.asset(
+        assetName,
+        height: 24,
+        width: 24,
+        colorFilter:
+            controller.currentIndex.value == index
+                ? ColorFilter.mode(AppColor.primary, BlendMode.srcIn)
+                : ColorFilter.mode(AppColor.grey, BlendMode.srcIn),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,80 +57,125 @@ class Dashboard extends StatelessWidget {
         );
       },
       child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: AppColor.primary,
+          elevation: 0,
+          title: GestureDetector(
+            onTap: () {},
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(2),
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColor.white,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: const Icon(Icons.person, size: 35),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Chào mừng",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      "Phạm Văn Đông",
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.notifications, size: 22, color: AppColor.white),
+            ),
+            const SizedBox(width: 12),
+          ],
+        ),
         backgroundColor: AppColor.background,
         resizeToAvoidBottomInset: false,
         extendBody: true,
         body: Obx(() => _pages[controller.currentIndex.value]),
-        bottomNavigationBar: Obx(
-          () => Container(
+        bottomNavigationBar: SafeArea(
+          child: Container(
             decoration: BoxDecoration(
+              color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: AppColor.text1.withOpacity(0.1),
-                  spreadRadius: 0,
-                  blurRadius: 10,
-                  offset: const Offset(0, -5),
+                  color: Colors.black12,
+                  offset: const Offset(0, -2),
+                  blurRadius: 6,
                 ),
               ],
             ),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-              child: BottomNavigationBar(
-                currentIndex: controller.currentIndex.value,
-                onTap: controller.changePage,
-                backgroundColor: AppColor.main,
-                selectedItemColor: AppColor.primary,
-                unselectedItemColor: AppColor.grey,
-                type: BottomNavigationBarType.fixed,
-                showUnselectedLabels: true,
-                selectedLabelStyle: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: DeviceHelper.getFontSize(14),
-                ),
-                unselectedLabelStyle: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: DeviceHelper.getFontSize(14),
-                ),
-                items: [
-                  BottomNavigationBarItem(
-                    icon: _buildSvgIcon('assets/icons/tongquan.svg', 0),
-                    label: 'Tổng quan',
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Obx(
+              () => GNav(
+                selectedIndex: controller.currentIndex.value,
+                onTabChange: controller.changePage,
+                gap: 2,
+                color: Colors.grey.shade600,
+                activeColor: AppColor.primary,
+                tabBackgroundColor: AppColor.primary.withAlpha(25),
+                rippleColor: AppColor.primary.withAlpha(30),
+                hoverColor: AppColor.primary.withAlpha(20),
+                tabBorderRadius: 16,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                tabs: [
+                  GButton(
+                    icon: Icons.circle,
+                    iconColor: Colors.transparent,
+                    iconActiveColor: Colors.transparent,
+                    leading: _buildSvgIcon('assets/icons/tongquan.svg', 0),
+                    text: 'Khám phá',
                   ),
-                  BottomNavigationBarItem(
-                    icon: _buildSvgIcon('assets/icons/yeuthich.svg', 1),
-                    label: 'Yêu thích',
+                  GButton(
+                    icon: Icons.circle,
+                    iconColor: Colors.transparent,
+                    iconActiveColor: Colors.transparent,
+                    leading: _buildSvgIcon('assets/icons/yeuthich.svg', 1),
+                    text: 'Yêu thích',
                   ),
-                  BottomNavigationBarItem(
-                    icon: _buildSvgIcon('assets/icons/giohang.svg', 2),
-                    label: 'Giỏ hàng',
+                  GButton(
+                    icon: Icons.circle,
+                    iconColor: Colors.transparent,
+                    iconActiveColor: Colors.transparent,
+                    leading: _buildSvgIcon('assets/icons/giohang.svg', 2),
+                    text: 'Giỏ hàng',
                   ),
-                  BottomNavigationBarItem(
-                    icon: _buildSvgIcon('assets/icons/canhan.svg', 3),
-                    label: 'Cá nhân',
+                  GButton(
+                    icon: Icons.circle,
+                    iconColor: Colors.transparent,
+                    iconActiveColor: Colors.transparent,
+                    leading: _buildSvgIcon('assets/icons/canhan.svg', 3),
+                    text: 'Cá nhân',
                   ),
                 ],
               ),
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSvgIcon(String assetName, int index) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: SvgPicture.asset(
-        assetName,
-        height: 24,
-        width: 24,
-        colorFilter:
-            controller.currentIndex.value == index
-                ? ColorFilter.mode(AppColor.primary, BlendMode.srcIn)
-                : ColorFilter.mode(AppColor.grey, BlendMode.srcIn),
       ),
     );
   }
