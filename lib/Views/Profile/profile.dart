@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:utshop/Components/custom_dialog.dart';
 import 'package:utshop/Controllers/Profile/profile_controller.dart';
 import 'package:utshop/Global/app_color.dart';
+import 'package:utshop/Services/auth.dart';
 
 class Profile extends StatelessWidget {
   Profile({super.key});
@@ -83,7 +85,15 @@ class Profile extends StatelessWidget {
                   title: 'Đăng xuất',
                   icon: Icons.logout,
                   showDivider: false,
-                  onTap: () {},
+                  onTap: () {
+                    CustomDialog.show(
+                      context: context,
+                      title: "Đăng xuất",
+                      content:
+                          "Bạn có chắc muốn đăng xuất khỏi ứng dụng không?",
+                      onPressed: () => Auth.backLogin(true),
+                    );
+                  },
                 ),
               ],
             ),
