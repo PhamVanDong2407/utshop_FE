@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:utshop/Components/custom_dialog.dart';
 import 'package:utshop/Controllers/Profile/profile_controller.dart';
 import 'package:utshop/Global/app_color.dart';
+import 'package:utshop/Routes/app_page.dart';
 import 'package:utshop/Services/auth.dart';
 
 class Profile extends StatelessWidget {
@@ -79,7 +80,9 @@ class Profile extends StatelessWidget {
                 _buildMenuItem(
                   title: 'Đổi mật khẩu',
                   icon: Icons.lock,
-                  onTap: () {},
+                  onTap: () {
+                    Get.toNamed(Routes.changePassword);
+                  },
                 ),
                 _buildMenuItem(
                   title: 'Đăng xuất',

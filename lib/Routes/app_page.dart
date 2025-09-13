@@ -5,6 +5,7 @@ import 'package:utshop/Views/ForgotPassword/reset_password.dart';
 import 'package:utshop/Views/ForgotPassword/verify_forgot_password.dart';
 import 'package:utshop/Views/Home/home.dart';
 import 'package:utshop/Views/Login/login.dart';
+import 'package:utshop/Views/Profile/ChangePassword/change_password.dart';
 import 'package:utshop/Views/Profile/profile.dart';
 import 'package:utshop/Views/Register/register.dart';
 import 'package:utshop/Views/Register/verify_register.dart';
@@ -34,5 +35,6 @@ class AppPage {
     GetPage(name: Routes.wishlish, page: () => Wishlish()),
     GetPage(name: Routes.cart, page: () => Cart()),
     GetPage(name: Routes.profile, page: () => Profile()),
+    GetPage(name: Routes.changePassword, page: () => ChangePassword()),
   ];
 }
