@@ -21,10 +21,14 @@ class ResetPasswordController extends GetxController {
 
   Future<void> resetPassword() async {
     try {
+      final hashedPassword = Utils.generateMd5(passwordController.text.trim());
+      final hashedConfirmPassword = Utils.generateMd5(
+        confirmPasswordController.text.trim(),
+      );
       final body = {
         "email": email,
-        "password": passwordController.text.trim(),
-        "confirmPassword": confirmPasswordController.text.trim(),
+        "password": hashedPassword,
+        "confirmPassword": hashedConfirmPassword,
       };
 
       final response = await APICaller.getInstance().post(

@@ -50,7 +50,7 @@ class VerifyForgotPassword extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'dongkeyphe@gmail.com',
+                controller.email,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
