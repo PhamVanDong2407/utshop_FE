@@ -57,14 +57,8 @@ class Auth {
           response['tokens']['refresh_token'],
         );
 
-        // Utils.saveStringWithKey(Constant.NAME, response['data']['name'] ?? '');
-        // Utils.saveStringWithKey(
-        //   Constant.AVATAR,
-        //   response['data']['avatar'] ?? '',
-        // );
-
         Utils.saveStringWithKey(Constant.EMAIL, email ?? emailPreferences);
-        Utils.saveStringWithKey(Constant.PASSWORD, param['password']!);
+        Utils.saveStringWithKey(Constant.PASSWORD, hashedPassword);
         Get.offAllNamed(Routes.dashboard);
       } else {
         backLogin(true);
