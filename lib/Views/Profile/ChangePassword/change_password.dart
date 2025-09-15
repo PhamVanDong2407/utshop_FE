@@ -3,17 +3,11 @@ import 'package:get/get.dart';
 import 'package:utshop/Controllers/Profile/ChangePassword/change_password_controller.dart';
 import 'package:utshop/Global/app_color.dart';
 
-class ChangePassword extends StatefulWidget {
-  const ChangePassword({super.key});
+class ChangePassword extends StatelessWidget {
+  ChangePassword({super.key});
 
-  @override
-  // ignore: library_private_types_in_public_api
-  _ChangePasswordState createState() => _ChangePasswordState();
-}
-
-class _ChangePasswordState extends State<ChangePassword> {
-  final _formKey = GlobalKey<FormState>();
   final controller = Get.put(ChangePasswordController());
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -45,81 +39,83 @@ class _ChangePasswordState extends State<ChangePassword> {
                       children: [
                         _labelForm(label: "Mật khẩu cũ", isRequired: true),
                         const SizedBox(height: 8),
-                        TextFormField(
-                          obscureText: controller.obscureOldPassword,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 16,
-                            ),
-                            hintText: 'Nhập mật khẩu cũ',
-                            hintStyle: TextStyle(color: AppColor.grey),
-                            errorStyle: TextStyle(color: AppColor.red),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                controller.obscureOldPassword
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: AppColor.grey,
+                        Obx(
+                          () => TextFormField(
+                            controller: controller.oldPasswordController,
+                            obscureText: controller.obscureOldPassword.value,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  controller.obscureOldPassword =
-                                      !controller.obscureOldPassword;
-                                });
-                              },
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 16,
+                              ),
+                              hintText: 'Nhập mật khẩu cũ',
+                              hintStyle: TextStyle(color: AppColor.grey),
+                              errorStyle: TextStyle(color: AppColor.red),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  controller.obscureOldPassword.value
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: AppColor.grey,
+                                ),
+                                onPressed: () {
+                                  controller.obscureOldPassword.value =
+                                      !controller.obscureOldPassword.value;
+                                },
+                              ),
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Vui lòng nhập mật khẩu cũ';
+                              }
+                              return null;
+                            },
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Vui lòng nhập mật khẩu cũ';
-                            }
-                            return null;
-                          },
                         ),
                         const SizedBox(height: 16),
                         _labelForm(label: "Mật khẩu mới", isRequired: true),
                         const SizedBox(height: 8),
-                        TextFormField(
-                          obscureText: controller.obscureNewPassword,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 16,
-                            ),
-                            hintText: 'Nhập mật khẩu mới',
-                            hintStyle: TextStyle(color: AppColor.grey),
-                            errorStyle: TextStyle(color: AppColor.red),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                controller.obscureNewPassword
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: AppColor.grey,
+                        Obx(
+                          () => TextFormField(
+                            controller: controller.newPasswordController,
+                            obscureText: controller.obscureNewPassword.value,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  controller.obscureNewPassword =
-                                      !controller.obscureNewPassword;
-                                });
-                              },
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 16,
+                              ),
+                              hintText: 'Nhập mật khẩu mới',
+                              hintStyle: TextStyle(color: AppColor.grey),
+                              errorStyle: TextStyle(color: AppColor.red),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  controller.obscureNewPassword.value
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: AppColor.grey,
+                                ),
+                                onPressed: () {
+                                  controller.obscureNewPassword.value =
+                                      !controller.obscureNewPassword.value;
+                                },
+                              ),
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Vui lòng nhập mật khẩu mới';
+                              }
+                              if (value.length < 6) {
+                                return 'Mật khẩu phải có ít nhất 6 ký tự';
+                              }
+                              return null;
+                            },
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Vui lòng nhập mật khẩu mới';
-                            }
-                            if (value.length < 6) {
-                              return ' Mật khẩu phải có ít nhất 6 ký tự';
-                            }
-                            return null;
-                          },
                         ),
                         const SizedBox(height: 16),
                         _labelForm(
@@ -127,43 +123,49 @@ class _ChangePasswordState extends State<ChangePassword> {
                           isRequired: true,
                         ),
                         const SizedBox(height: 8),
-                        TextFormField(
-                          obscureText: controller.obscureConfirmPassword,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 16,
-                            ),
-                            hintText: 'Xác nhận mật khẩu mới',
-                            hintStyle: TextStyle(color: AppColor.grey),
-                            errorStyle: TextStyle(color: AppColor.red),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                controller.obscureConfirmPassword
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: AppColor.grey,
+                        Obx(
+                          () => TextFormField(
+                            controller: controller.confirmPasswordController,
+                            obscureText:
+                                controller.obscureConfirmPassword.value,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  controller.obscureConfirmPassword =
-                                      !controller.obscureConfirmPassword;
-                                });
-                              },
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 16,
+                              ),
+                              hintText: 'Xác nhận mật khẩu mới',
+                              hintStyle: TextStyle(color: AppColor.grey),
+                              errorStyle: TextStyle(color: AppColor.red),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  controller.obscureConfirmPassword.value
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: AppColor.grey,
+                                ),
+                                onPressed: () {
+                                  controller.obscureConfirmPassword.value =
+                                      !controller.obscureConfirmPassword.value;
+                                },
+                              ),
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Vui lòng nhập xác nhận mật khẩu mới';
+                              }
+                              if (value.length < 6) {
+                                return 'Mật khẩu phải có ít nhất 6 ký tự';
+                              }
+                              if (value !=
+                                  controller.newPasswordController.text) {
+                                return 'Mật khẩu mới và xác nhận mật khẩu không khớp';
+                              }
+                              return null;
+                            },
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Vui lòng nhập xác nhận mật khẩu mới';
-                            }
-                            if (value.length < 6) {
-                              return 'Mật khẩu phải có ít nhất 6 ký tự';
-                            }
-                            return null;
-                          },
                         ),
                       ],
                     ),
@@ -176,24 +178,29 @@ class _ChangePasswordState extends State<ChangePassword> {
               child: SizedBox(
                 width: double.infinity,
                 height: 48,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColor.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                child: Obx(
+                  () => ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
-                  ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Xử lý đổi mật khẩu
-                    }
-                  },
-                  child: const Text(
-                    'Đổi mật khẩu',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                    onPressed:
+                        controller.isLoading.value
+                            ? null
+                            : () {
+                              if (_formKey.currentState!.validate()) {
+                                controller.changePassword();
+                              }
+                            },
+                    child: const Text(
+                      'Đổi mật khẩu',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
