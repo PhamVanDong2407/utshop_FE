@@ -75,7 +75,9 @@ class Profile extends StatelessWidget {
                 _buildMenuItem(
                   title: 'Thông tin cá nhân',
                   icon: Icons.person,
-                  onTap: () {},
+                  onTap: () {
+                    Get.toNamed(Routes.info);
+                  },
                 ),
                 _buildMenuItem(
                   title: 'Đổi mật khẩu',

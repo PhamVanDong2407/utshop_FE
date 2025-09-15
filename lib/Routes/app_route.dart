@@ -15,6 +15,7 @@ abstract class Routes {
   static const wishlish = _Paths.wishlish;
   static const cart = _Paths.cart;
   static const profile = _Paths.profile;
+  static const info = _Paths.info;
   static const changePassword = _Paths.changePassword;
 }
 
@@ -33,5 +34,6 @@ abstract class _Paths {
   static const String wishlish = '/wishlish';
   static const String cart = '/cart';
   static const String profile = '/profile';
+  static const String info = '/info';
   static const String changePassword = '/change-password';
 }
