@@ -27,13 +27,28 @@ class Profile extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey[300],
-                    child: const Icon(
-                      Icons.person,
-                      size: 40,
-                      color: Colors.black,
+                  Obx(
+                    () => ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child:
+                          controller.avatar.value.isNotEmpty
+                              ? Image.network(
+                                controller.baseUrl + controller.avatar.value,
+                                width: 35,
+                                height: 35,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) => const Icon(
+                                      Icons.person,
+                                      size: 35,
+                                      color: Colors.black,
+                                    ),
+                              )
+                              : const Icon(
+                                Icons.person,
+                                size: 35,
+                                color: Colors.black,
+                              ),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -41,20 +56,28 @@ class Profile extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Phạm Văn Đông',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                        Obx(
+                          () => Text(
+                            controller.name.value == ''
+                                ? 'Người dùng'
+                                : controller.name.value,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          'dongkeyphe@gmail.com',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
+                        Obx(
+                          () => Text(
+                            controller.email.value == ''
+                                ? 'Chưa cập nhật email'
+                                : controller.email.value,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
                           ),
                         ),
                       ],

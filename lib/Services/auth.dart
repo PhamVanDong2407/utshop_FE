@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:utshop/Global/constant.dart';
 import 'package:utshop/Global/global_value.dart';
@@ -57,6 +58,12 @@ class Auth {
           response['tokens']['refresh_token'],
         );
 
+        Utils.saveStringWithKey(Constant.NAME, response['data']['name'] ?? '');
+        Utils.saveStringWithKey(
+          Constant.AVATAR,
+          response['data']['avatar'] ?? '',
+        );
+
         Utils.saveStringWithKey(Constant.EMAIL, email ?? emailPreferences);
         Utils.saveStringWithKey(Constant.PASSWORD, hashedPassword);
         Get.offAllNamed(Routes.dashboard);
@@ -65,6 +72,7 @@ class Auth {
       }
     } catch (e) {
       Utils.showSnackBar(title: 'Thông báo', message: '$e');
+      debugPrint('Error: $e');
     }
   }
 }

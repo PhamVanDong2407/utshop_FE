@@ -74,16 +74,36 @@ class Dashboard extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: AppColor.white,
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: const Icon(Icons.person, size: 35),
+                  child: Obx(
+                    () => ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child:
+                          controller.avatar.value.isNotEmpty
+                              ? Image.network(
+                                controller.baseUrl + controller.avatar.value,
+                                width: 35,
+                                height: 35,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) => const Icon(
+                                      Icons.person,
+                                      size: 35,
+                                      color: Colors.black,
+                                    ),
+                              )
+                              : const Icon(
+                                Icons.person,
+                                size: 35,
+                                color: Colors.black,
+                              ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Chào mừng",
                       style: TextStyle(
                         color: Colors.white,
@@ -91,13 +111,17 @@ class Dashboard extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 2),
-                    Text(
-                      "Phạm Văn Đông",
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
+                    const SizedBox(height: 2),
+                    Obx(
+                      () => Text(
+                        controller.name.value == ''
+                            ? 'Người dùng'
+                            : controller.name.value,
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],

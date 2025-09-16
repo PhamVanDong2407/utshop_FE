@@ -5,12 +5,11 @@ class Constant {
 
   static const String NEXT_PUBLIC_KEY_PASS = "";
 
-  static const String USERNAME = "username";
+  static const String NAME = "name";
   static const String EMAIL = "email";
   static const String PASSWORD = "password";
   static const String ACCESS_TOKEN = "accessToken";
   static const String REFRESH_TOKEN = "refreshToken";
-  static const String NAME = 'name';
   static const String AVATAR = 'avatar';
 
 }
