@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:utshop/Controllers/Profile/Info/Info_controller.dart';
 import 'package:utshop/Global/app_color.dart';
-import 'package:utshop/Global/constant.dart';
 import 'package:utshop/Utils/utils.dart';
 
 class Info extends StatelessWidget {
@@ -104,7 +103,9 @@ class Info extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {}
+                  if (_formKey.currentState!.validate()) {
+                    controller.submit();
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColor.primary,
@@ -150,7 +151,7 @@ class Info extends StatelessWidget {
                           fit: BoxFit.cover,
                         )
                         : Image.network(
-                          "${Constant.BASE_URL_IMAGE}${controller.avatar.value}",
+                          controller.baseUrlImg + controller.avatar.value,
                           height: 100,
                           width: 100,
                           fit: BoxFit.cover,

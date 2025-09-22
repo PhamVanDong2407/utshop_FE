@@ -2,7 +2,7 @@ class User {
   String? uuid;
   String? name;
   String? avatar;
-  String? gender;
+  int? gender;
   String? birthDay;
   String? phone;
   String? email;

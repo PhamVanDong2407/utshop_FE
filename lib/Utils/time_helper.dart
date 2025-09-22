@@ -37,16 +37,22 @@ class TimeHelper {
   }
 
   static String convertDateFormat(String? inputDate, bool isHttpRquest) {
-    if (inputDate == null) return "--";
-    if (inputDate.contains("T")) inputDate = inputDate.split("T")[0];
+    if (inputDate == null || inputDate.isEmpty || inputDate == "--") return "";
+
+    if (inputDate.contains("T")) {
+      inputDate = inputDate.split("T")[0];
+    }
+
     if (isHttpRquest) {
       final parts = inputDate.split('/');
+      if (parts.length < 3) return "";
       final day = parts[0].padLeft(2, '0');
       final month = parts[1].padLeft(2, '0');
       final year = parts[2];
       return '$year-$month-$day';
     } else {
       final parts = inputDate.split('-');
+      if (parts.length < 3) return "";
       final year = parts[0];
       final month = parts[1].padLeft(2, '0');
       final day = parts[2].padLeft(2, '0');
