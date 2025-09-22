@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:utshop/Controllers/Home/home_controller.dart';
 import 'package:utshop/Controllers/Profile/profile_controller.dart';
+import 'package:utshop/Controllers/dashboard_controller.dart';
 import 'package:utshop/Global/constant.dart';
 import 'package:utshop/Models/user.dart';
 import 'package:utshop/Services/api_caller.dart';
@@ -68,79 +69,103 @@ class InfoController extends GetxController {
   submit() {
     isWaitSubmit.value = true;
     try {
-      final body = {
-        "name": name.text.trim(),
-        "phone": phone.text.trim(),
-        "email": email.text.trim(),
-        "province": province.text.trim(),
-        "district": district.text.trim(),
-        "address": address.text.trim(),
-        "gender": gender.value,
-      };
-
-      if (birthDay.text.isNotEmpty && birthDay.text != "--") {
-        body["birth_day"] = TimeHelper.convertDateFormat(birthDay.text, true);
-      }
-
+      // Nếu không đổi avatar
       if (avatarLocal.value.path.isEmpty) {
-        APICaller.getInstance().put('v1/user/me', body: body).then((response) {
-          isWaitSubmit.value = false;
+        APICaller.getInstance()
+            .put(
+              'v1/user/me',
+              body: {
+                "name": name.text.trim(),
+                "phone": phone.text.trim(),
+                "email": email.text.trim(),
+                "province": province.text.trim(),
+                "district": district.text.trim(),
+                "address": address.text.trim(),
+                "gender": gender.value == -1 ? null : gender.value,
+                "birth_day":
+                    (birthDay.text.isNotEmpty && birthDay.text != "--")
+                        ? TimeHelper.convertDateFormat(birthDay.text, true)
+                        : null,
+                "avatar": detail.avatar,
+              },
+            )
+            .then((response) {
+              isWaitSubmit.value = false;
 
-          _afterUpdate(response, null);
-        });
-      } else {
-        APICaller.getInstance().postFile(file: avatarLocal.value).then((value) {
-          final filePath = value['file'];
-          body['avatar'] = filePath;
+              if (Get.isRegistered<ProfileController>()) {
+                Get.find<ProfileController>().updateName(name.text.trim());
+              }
+              if (Get.isRegistered<HomeController>()) {
+                Get.find<HomeController>().updateName(name.text.trim());
+              }
 
-          APICaller.getInstance().put('v1/user/me', body: body).then((respone) {
-            isWaitSubmit.value = false;
+              Utils.saveStringWithKey(Constant.NAME, name.text.trim());
+              Get.back();
 
-            if (respone == null) {
-              APICaller.getInstance().delete('v1/file/$filePath');
-            } else {
-              _afterUpdate(respone, filePath);
-            }
-          });
-        });
+              Utils.showSnackBar(
+                title: "Thông báo",
+                message: response['message'] ?? "Cập nhật thành công",
+              );
+            });
+        return;
       }
+
+      // Nếu có đổi avatar
+      APICaller.getInstance().postFile(file: avatarLocal.value).then((value) {
+        final newAvatar = value['file'];
+        APICaller.getInstance()
+            .put(
+              'v1/user/me',
+              body: {
+                "name": name.text.trim(),
+                "phone": phone.text.trim(),
+                "email": email.text.trim(),
+                "province": province.text.trim(),
+                "district": district.text.trim(),
+                "address": address.text.trim(),
+                "gender": gender.value == -1 ? null : gender.value,
+                "birth_day":
+                    (birthDay.text.isNotEmpty && birthDay.text != "--")
+                        ? TimeHelper.convertDateFormat(birthDay.text, true)
+                        : null,
+                "avatar": newAvatar,
+              },
+            )
+            .then((response) {
+              isWaitSubmit.value = false;
+
+              if (response == null) {
+                APICaller.getInstance().delete('v1/file/$newAvatar');
+                Utils.showSnackBar(
+                  title: "Error",
+                  message: "Cập nhật thất bại!",
+                );
+                return;
+              }
+
+              if (Get.isRegistered<ProfileController>()) {
+                Get.find<ProfileController>().updateAvatar(newAvatar);
+                Get.find<ProfileController>().updateName(name.text.trim());
+              }
+
+              if (Get.isRegistered<DashboardController>()) {
+                Get.find<DashboardController>().updateAvatar(newAvatar);
+                Get.find<DashboardController>().updateName(name.text.trim());
+              }
+
+              Utils.saveStringWithKey(Constant.NAME, name.text.trim());
+              Utils.saveStringWithKey(Constant.AVATAR, newAvatar);
+
+              Get.back();
+              Utils.showSnackBar(
+                title: "Thông báo",
+                message: response['message'] ?? "Cập nhật thành công",
+              );
+            });
+      });
     } catch (e) {
       isWaitSubmit.value = false;
-      debugPrint("submit error: $e");
       Utils.showSnackBar(title: 'Error!', message: 'Đã có lỗi xảy ra:\n$e!');
-    }
-  }
-
-  void _afterUpdate(Map? response, String? newAvatar) {
-    if (response != null && response['code'] == 200) {
-      if (Get.isRegistered<ProfileController>()) {
-        if (newAvatar != null) {
-          Get.find<ProfileController>().updateAvatar(newAvatar);
-          Utils.saveStringWithKey(Constant.AVATAR, newAvatar);
-        }
-        Get.find<ProfileController>().updateName(name.text.trim());
-      }
-      if (Get.isRegistered<HomeController>()) {
-        if (newAvatar != null) {
-          Get.find<HomeController>().updateAvatar(newAvatar);
-
-          Get.find<HomeController>().updateName(name.text.trim());
-        }
-        Utils.saveStringWithKey(Constant.NAME, name.text.trim());
-
-        Get.back();
-        getDetail();
-
-        Utils.showSnackBar(
-          title: 'Thông báo',
-          message: response['message'] ?? "Cập nhật thành công",
-        );
-      } else {
-        Utils.showSnackBar(
-          title: 'Error',
-          message: response['message'] ?? "Cập nhật thất bại",
-        );
-      }
     }
   }
 }
