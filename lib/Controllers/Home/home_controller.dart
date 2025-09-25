@@ -7,6 +7,8 @@ class HomeController extends GetxController {
   RxString name = ''.obs;
   RxString avatar = ''.obs;
   final String baseUrl = dotenv.env['API_URL'] ?? '';
+  RxString searchQuery = ''.obs;
+  RxString selectedFilter = 'Tất cả'.obs;
 
   @override
   void onInit() {
@@ -25,5 +27,14 @@ class HomeController extends GetxController {
 
   updateAvatar(String avatar) {
     this.avatar.value = baseUrl + avatar;
+  }
+
+
+  void clearSearch() {
+    searchQuery.value = '';
+  }
+
+  void onSearchChanged(String value) {
+    searchQuery.value = value;
   }
 }
