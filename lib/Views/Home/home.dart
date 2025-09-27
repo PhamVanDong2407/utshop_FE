@@ -140,140 +140,337 @@ class Home extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Obx(
-                  () => ElevatedButton(
-                    onPressed: () => controller.selectedFilter.value = 'Tất cả',
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          controller.selectedFilter.value == 'Tất cả'
-                              ? AppColor.primary
-                              : Colors.grey[200],
-                      foregroundColor:
-                          controller.selectedFilter.value == 'Tất cả'
-                              ? Colors.white
-                              : AppColor.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    child: Text(
-                      'Tất cả',
-                      style: TextStyle(
+                  () => GestureDetector(
+                    onTap: () => controller.selectedFilter.value = 'Tất cả',
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 200),
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
                         color:
                             controller.selectedFilter.value == 'Tất cả'
-                                ? Colors.white
-                                : AppColor.primary,
+                                ? AppColor.primary.withOpacity(0.1)
+                                : Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color:
+                              controller.selectedFilter.value == 'Tất cả'
+                                  ? AppColor.primary
+                                  : Colors.grey.shade300,
+                          width:
+                              controller.selectedFilter.value == 'Tất cả'
+                                  ? 2
+                                  : 1,
+                        ),
+                        boxShadow: [
+                          if (controller.selectedFilter.value == 'Tất cả')
+                            BoxShadow(
+                              color: AppColor.primary.withOpacity(0.2),
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          ClipOval(
+                            child: Image.asset(
+                              'assets/images/tatca.jpg',
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                              errorBuilder:
+                                  (context, error, stackTrace) => Container(
+                                    width: 60,
+                                    height: 60,
+                                    color: Colors.grey.shade200,
+                                    child: Center(child: Text('Lỗi')),
+                                  ),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Tất cả',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight:
+                                  controller.selectedFilter.value == 'Tất cả'
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                              color:
+                                  controller.selectedFilter.value == 'Tất cả'
+                                      ? AppColor.primary
+                                      : AppColor.black,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
                 SizedBox(width: 12),
                 Obx(
-                  () => ElevatedButton(
-                    onPressed: () => controller.selectedFilter.value = 'Nam',
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          controller.selectedFilter.value == 'Nam'
-                              ? AppColor.primary
-                              : Colors.grey[200],
-                      foregroundColor:
-                          controller.selectedFilter.value == 'Nam'
-                              ? Colors.white
-                              : AppColor.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    child: Text(
-                      'Nam',
-                      style: TextStyle(
+                  () => GestureDetector(
+                    onTap: () => controller.selectedFilter.value = 'Nam',
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 200),
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
                         color:
                             controller.selectedFilter.value == 'Nam'
-                                ? Colors.white
-                                : AppColor.primary,
+                                ? AppColor.primary.withOpacity(0.1)
+                                : Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color:
+                              controller.selectedFilter.value == 'Nam'
+                                  ? AppColor.primary
+                                  : Colors.grey.shade300,
+                          width:
+                              controller.selectedFilter.value == 'Nam' ? 2 : 1,
+                        ),
+                        boxShadow: [
+                          if (controller.selectedFilter.value == 'Nam')
+                            BoxShadow(
+                              color: AppColor.primary.withOpacity(0.2),
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          ClipOval(
+                            child: Image.asset(
+                              'assets/images/nam.jpg',
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                              errorBuilder:
+                                  (context, error, stackTrace) => Container(
+                                    width: 60,
+                                    height: 60,
+                                    color: Colors.grey.shade200,
+                                    child: Center(child: Text('Lỗi')),
+                                  ),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Nam',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight:
+                                  controller.selectedFilter.value == 'Nam'
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                              color:
+                                  controller.selectedFilter.value == 'Nam'
+                                      ? AppColor.primary
+                                      : AppColor.black,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
                 SizedBox(width: 12),
                 Obx(
-                  () => ElevatedButton(
-                    onPressed: () => controller.selectedFilter.value = 'Nữ',
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          controller.selectedFilter.value == 'Nữ'
-                              ? AppColor.primary
-                              : Colors.grey[200],
-                      foregroundColor:
-                          controller.selectedFilter.value == 'Nữ'
-                              ? Colors.white
-                              : AppColor.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    child: Text(
-                      'Nữ',
-                      style: TextStyle(
+                  () => GestureDetector(
+                    onTap: () => controller.selectedFilter.value = 'Nữ',
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 200),
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
                         color:
                             controller.selectedFilter.value == 'Nữ'
-                                ? Colors.white
-                                : AppColor.primary,
+                                ? AppColor.primary.withOpacity(0.1)
+                                : Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color:
+                              controller.selectedFilter.value == 'Nữ'
+                                  ? AppColor.primary
+                                  : Colors.grey.shade300,
+                          width:
+                              controller.selectedFilter.value == 'Nữ' ? 2 : 1,
+                        ),
+                        boxShadow: [
+                          if (controller.selectedFilter.value == 'Nữ')
+                            BoxShadow(
+                              color: AppColor.primary.withOpacity(0.2),
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          ClipOval(
+                            child: Image.asset(
+                              'assets/images/nu.jpg',
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                              errorBuilder:
+                                  (context, error, stackTrace) => Container(
+                                    width: 60,
+                                    height: 60,
+                                    color: Colors.grey.shade200,
+                                    child: Center(child: Text('Lỗi')),
+                                  ),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Nữ',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight:
+                                  controller.selectedFilter.value == 'Nữ'
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                              color:
+                                  controller.selectedFilter.value == 'Nữ'
+                                      ? AppColor.primary
+                                      : AppColor.black,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
                 SizedBox(width: 12),
                 Obx(
-                  () => ElevatedButton(
-                    onPressed: () => controller.selectedFilter.value = 'Quần',
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          controller.selectedFilter.value == 'Quần'
-                              ? AppColor.primary
-                              : Colors.grey[200],
-                      foregroundColor:
-                          controller.selectedFilter.value == 'Quần'
-                              ? Colors.white
-                              : AppColor.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    child: Text(
-                      'Quần',
-                      style: TextStyle(
+                  () => GestureDetector(
+                    onTap: () => controller.selectedFilter.value = 'Quần',
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 200),
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
                         color:
                             controller.selectedFilter.value == 'Quần'
-                                ? Colors.white
-                                : AppColor.primary,
+                                ? AppColor.primary.withOpacity(0.1)
+                                : Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color:
+                              controller.selectedFilter.value == 'Quần'
+                                  ? AppColor.primary
+                                  : Colors.grey.shade300,
+                          width:
+                              controller.selectedFilter.value == 'Quần' ? 2 : 1,
+                        ),
+                        boxShadow: [
+                          if (controller.selectedFilter.value == 'Quần')
+                            BoxShadow(
+                              color: AppColor.primary.withOpacity(0.2),
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          ClipOval(
+                            child: Image.asset(
+                              'assets/images/quan.jpg',
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                              errorBuilder:
+                                  (context, error, stackTrace) => Container(
+                                    width: 60,
+                                    height: 60,
+                                    color: Colors.grey.shade200,
+                                    child: Center(child: Text('Lỗi')),
+                                  ),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Quần',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight:
+                                  controller.selectedFilter.value == 'Quần'
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                              color:
+                                  controller.selectedFilter.value == 'Quần'
+                                      ? AppColor.primary
+                                      : AppColor.black,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
                 SizedBox(width: 12),
                 Obx(
-                  () => ElevatedButton(
-                    onPressed: () => controller.selectedFilter.value = 'Áo',
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          controller.selectedFilter.value == 'Áo'
-                              ? AppColor.primary
-                              : Colors.grey[200],
-                      foregroundColor:
-                          controller.selectedFilter.value == 'Áo'
-                              ? Colors.white
-                              : AppColor.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    child: Text(
-                      'Áo',
-                      style: TextStyle(
+                  () => GestureDetector(
+                    onTap: () => controller.selectedFilter.value = 'Áo',
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 200),
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
                         color:
                             controller.selectedFilter.value == 'Áo'
-                                ? Colors.white
-                                : AppColor.primary,
+                                ? AppColor.primary.withOpacity(0.1)
+                                : Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color:
+                              controller.selectedFilter.value == 'Áo'
+                                  ? AppColor.primary
+                                  : Colors.grey.shade300,
+                          width:
+                              controller.selectedFilter.value == 'Áo' ? 2 : 1,
+                        ),
+                        boxShadow: [
+                          if (controller.selectedFilter.value == 'Áo')
+                            BoxShadow(
+                              color: AppColor.primary.withOpacity(0.2),
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          ClipOval(
+                            child: Image.asset(
+                              'assets/images/ao.jpg',
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                              errorBuilder:
+                                  (context, error, stackTrace) => Container(
+                                    width: 60,
+                                    height: 60,
+                                    color: Colors.grey.shade200,
+                                    child: Center(child: Text('Lỗi')),
+                                  ),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Áo',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight:
+                                  controller.selectedFilter.value == 'Áo'
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                              color:
+                                  controller.selectedFilter.value == 'Áo'
+                                      ? AppColor.primary
+                                      : AppColor.black,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
