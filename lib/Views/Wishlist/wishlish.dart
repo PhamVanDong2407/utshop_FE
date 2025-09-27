@@ -69,7 +69,7 @@ class Wishlish extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            '500.000 VND',
+                            '500.000 ₫',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,

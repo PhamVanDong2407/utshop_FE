@@ -842,7 +842,7 @@ class _ProductCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "500.000đ",
+                        "500.000 ₫",
                         style: TextStyle(
                           color: AppColor.primary,
                           fontSize: 20,
