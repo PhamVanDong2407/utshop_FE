@@ -9,6 +9,9 @@ class HomeController extends GetxController {
   final String baseUrl = dotenv.env['API_URL'] ?? '';
   RxString searchQuery = ''.obs;
   RxString selectedFilter = 'Tất cả'.obs;
+  RxString selectedColor = "".obs;
+  RxString selectedSize = ''.obs;
+  RxInt selectedQuantity = 1.obs;
 
   @override
   void onInit() {
@@ -29,12 +32,25 @@ class HomeController extends GetxController {
     this.avatar.value = baseUrl + avatar;
   }
 
-
   void clearSearch() {
     searchQuery.value = '';
   }
 
   void onSearchChanged(String value) {
     searchQuery.value = value;
+  }
+
+  void setSize(String size) {
+    selectedSize.value = size;
+  }
+
+  void incrementQuantity() {
+    selectedQuantity.value++;
+  }
+
+  void decrementQuantity() {
+    if (selectedQuantity.value > 1) {
+      selectedQuantity.value--;
+    }
   }
 }
