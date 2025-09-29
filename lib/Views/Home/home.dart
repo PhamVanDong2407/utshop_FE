@@ -967,6 +967,7 @@ class _ProductCard extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 16),
             ],
           ),
         );
