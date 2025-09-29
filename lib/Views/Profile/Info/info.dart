@@ -97,7 +97,7 @@ class Info extends StatelessWidget {
           Positioned(
             left: 16,
             right: 16,
-            bottom: 16,
+            bottom: 32,
             child: SizedBox(
               width: double.infinity,
               height: 50,

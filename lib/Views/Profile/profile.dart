@@ -103,6 +103,21 @@ class Profile extends StatelessWidget {
                   },
                 ),
                 _buildMenuItem(
+                  title: 'Lịch sử đơn hàng',
+                  icon: Icons.history,
+                  onTap: () {},
+                ),
+                _buildMenuItem(
+                  title: 'Địa chỉ giao hàng',
+                  icon: Icons.location_on,
+                  onTap: () {},
+                ),
+                _buildMenuItem(
+                  title: 'Kho Voucher',
+                  icon: Icons.card_giftcard,
+                  onTap: () {},
+                ),
+                _buildMenuItem(
                   title: 'Đổi mật khẩu',
                   icon: Icons.lock,
                   onTap: () {
