@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:utshop/Controllers/Home/home_controller.dart';
 import 'package:utshop/Global/app_color.dart';
 import 'package:get/get.dart';
+import 'package:utshop/Routes/app_page.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
@@ -672,131 +673,139 @@ class _ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     const double cardWidth = 160;
 
-    return Container(
-      width: cardWidth,
-      margin: const EdgeInsets.only(right: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 6,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
-                child: Image.asset(
-                  imagePath,
-                  height: 180,
-                  width: cardWidth,
-                  fit: BoxFit.cover,
-                  errorBuilder:
-                      (context, error, stackTrace) => Container(
-                        height: 180,
-                        color: Colors.grey[200],
-                        child: Center(child: Text("Ảnh lỗi")),
-                      ),
-                ),
-              ),
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Obx(
-                  () => GestureDetector(
-                    onTap: () {
-                      isFavorite.value = !isFavorite.value;
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.8),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        isFavorite.value
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        color: isFavorite.value ? Colors.red : AppColor.primary,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap: () {
+        Get.toNamed(Routes.productDetail);
+      },
+      child: Container(
+        width: cardWidth,
+        margin: const EdgeInsets.only(right: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 6,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
               children: [
-                // Tên sản phẩm
-                Text(
-                  name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  _formatPrice(price),
-                  style: TextStyle(
-                    color: AppColor.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                ClipRRect(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(12.0),
+                  ),
+                  child: Image.asset(
+                    imagePath,
+                    height: 180,
+                    width: cardWidth,
+                    fit: BoxFit.cover,
+                    errorBuilder:
+                        (context, error, stackTrace) => Container(
+                          height: 180,
+                          color: Colors.grey[200],
+                          child: Center(child: Text("Ảnh lỗi")),
+                        ),
                   ),
                 ),
-                const SizedBox(height: 8),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 36,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _showBuyBottomSheet(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColor.primary,
-                      elevation: 0,
-                      padding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Obx(
+                    () => GestureDetector(
+                      onTap: () {
+                        isFavorite.value = !isFavorite.value;
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.8),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          isFavorite.value
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color:
+                              isFavorite.value ? Colors.red : AppColor.primary,
+                          size: 20,
+                        ),
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.shopping_bag_rounded,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                        SizedBox(width: 6),
-                        Text(
-                          'Mua ngay',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Tên sản phẩm
+                  Text(
+                    name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _formatPrice(price),
+                    style: TextStyle(
+                      color: AppColor.primary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 36,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _showBuyBottomSheet(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColor.primary,
+                        elevation: 0,
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.shopping_bag_rounded,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                          SizedBox(width: 6),
+                          Text(
+                            'Mua ngay',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

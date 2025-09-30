@@ -12,6 +12,7 @@ abstract class Routes {
   static const resetPassword = _Paths.resetPassword;
   static const dashboard = _Paths.dashboard;
   static const home = _Paths.home;
+  static const productDetail = _Paths.productDetail;
   static const wishlish = _Paths.wishlish;
   static const cart = _Paths.cart;
   static const profile = _Paths.profile;
@@ -31,6 +32,7 @@ abstract class _Paths {
   static const String resetPassword = '/reset-password';
   static const String dashboard = '/dashboard';
   static const String home = '/home';
+  static const String productDetail = '/product-detail';
   static const String wishlish = '/wishlish';
   static const String cart = '/cart';
   static const String profile = '/profile';
