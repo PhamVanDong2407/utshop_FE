@@ -5,6 +5,8 @@ class ProductDetailController extends GetxController {
   RxBool isFavorite = false.obs;
   RxString selectedColor = "".obs;
   RxString selectedSize = ''.obs;
+  RxInt selectedQuantity = 1.obs;
+
 
   void updatePage(int index) {
     currentPage.value = index;
@@ -12,5 +14,15 @@ class ProductDetailController extends GetxController {
 
   void setSize(String size) {
     selectedSize.value = size;
+  }
+
+    void incrementQuantity() {
+    selectedQuantity.value++;
+  }
+
+  void decrementQuantity() {
+    if (selectedQuantity.value > 1) {
+      selectedQuantity.value--;
+    }
   }
 }
