@@ -13,6 +13,7 @@ abstract class Routes {
   static const dashboard = _Paths.dashboard;
   static const home = _Paths.home;
   static const popularProduct = _Paths.popularProduct;
+  static const allProduct = _Paths.allProduct;
   static const productDetail = _Paths.productDetail;
   static const wishlish = _Paths.wishlish;
   static const cart = _Paths.cart;
@@ -35,6 +36,7 @@ abstract class _Paths {
   static const String home = '/home';
   static const String popularProduct = '/popular-product';
   static const String productDetail = '/product-detail';
+  static const String allProduct = '/all-product';
   static const String wishlish = '/wishlish';
   static const String cart = '/cart';
   static const String profile = '/profile';

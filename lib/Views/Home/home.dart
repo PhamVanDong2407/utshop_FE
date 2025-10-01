@@ -592,7 +592,9 @@ class Home extends StatelessWidget {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.toNamed(Routes.allProduct);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColor.primary,
                     padding: const EdgeInsets.symmetric(
