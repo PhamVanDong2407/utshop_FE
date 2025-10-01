@@ -3,6 +3,7 @@ import 'package:utshop/Views/Cart/cart.dart';
 import 'package:utshop/Views/ForgotPassword/forgot_password.dart';
 import 'package:utshop/Views/ForgotPassword/reset_password.dart';
 import 'package:utshop/Views/ForgotPassword/verify_forgot_password.dart';
+import 'package:utshop/Views/Home/PopularProduct/popular_product.dart';
 import 'package:utshop/Views/Home/ProductDetail/product_detail.dart';
 import 'package:utshop/Views/Home/home.dart';
 import 'package:utshop/Views/Login/login.dart';
@@ -34,6 +35,7 @@ class AppPage {
     GetPage(name: Routes.resetPassword, page: () => ResetPassword()),
     GetPage(name: Routes.dashboard, page: () => Dashboard()),
     GetPage(name: Routes.home, page: () => Home()),
+    GetPage(name: Routes.popularProduct, page: () => PopularProduct()),
     GetPage(name: Routes.productDetail, page: () => ProductDetail()),
     GetPage(name: Routes.wishlish, page: () => Wishlish()),
     GetPage(name: Routes.cart, page: () => Cart()),
