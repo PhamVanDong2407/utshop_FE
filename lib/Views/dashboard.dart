@@ -45,6 +45,7 @@ class Dashboard extends StatelessWidget {
         }
         CustomDialog.show(
           context: context,
+          color: AppColor.primary,
           title: "Đóng ứng dụng",
           content: "Bạn có muốn đóng ứng dụng?",
           onPressed: () {

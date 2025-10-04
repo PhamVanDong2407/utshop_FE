@@ -135,6 +135,7 @@ class Profile extends StatelessWidget {
                   onTap: () {
                     CustomDialog.show(
                       context: context,
+                      color: AppColor.primary,
                       title: "Đăng xuất",
                       content:
                           "Bạn có chắc muốn đăng xuất khỏi ứng dụng không?",

@@ -820,169 +820,187 @@ class _ProductCard extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.6,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        return DraggableScrollableSheet(
+          initialChildSize: 0.8,
+          expand: false,
+          builder: (_, scrollController) {
+            return Container(
+              padding: const EdgeInsets.all(20),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(12.0),
-                    ),
-                    child: Image.asset(
-                      imagePath,
-                      height: 120,
-                      width: 120,
-                      fit: BoxFit.cover,
-                      errorBuilder:
-                          (context, error, stackTrace) => Container(
-                            height: 120,
-                            width: 120,
-                            color: Colors.grey[200],
-                            child: Center(child: Text("Ảnh lỗi")),
-                          ),
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  // ẢNH VÀ GIÁ
+                  Row(
                     children: [
-                      Text(
-                        "500.000 ₫",
-                        style: TextStyle(
-                          color: AppColor.primary,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Image.asset(
+                          imagePath,
+                          height: 120,
+                          width: 120,
+                          fit: BoxFit.cover,
+                          errorBuilder:
+                              (context, error, stackTrace) => Container(
+                                height: 120,
+                                width: 120,
+                                color: Colors.grey[200],
+                                child: const Center(child: Text("Ảnh lỗi")),
+                              ),
                         ),
                       ),
-                      Text(
-                        "Kho: 26",
-                        style: TextStyle(
-                          color: AppColor.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      const SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "500.000 ₫",
+                            style: TextStyle(
+                              color: AppColor.primary,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            "Kho: 26",
+                            style: TextStyle(
+                              color: AppColor.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-              SizedBox(height: 24),
-              Divider(height: 1, color: Colors.grey),
-              SizedBox(height: 12),
-              Text(
-                "Màu sắc",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  _colorOption(
-                    color: Colors.white,
-                    borderColor: Colors.grey.shade300,
-                    colorName: 'Trắng',
-                  ),
-                  SizedBox(width: 16),
-                  _colorOption(color: Colors.red, colorName: 'Đỏ'),
-                  SizedBox(width: 16),
-                  _colorOption(color: Colors.black, colorName: 'Đen'),
-                ],
-              ),
-              SizedBox(height: 24),
-              Text(
-                "Kích thước",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  _sizeOption(size: 'M'),
-                  SizedBox(width: 16),
-                  _sizeOption(size: 'L'),
-                  SizedBox(width: 16),
-                  _sizeOption(size: 'XL'),
-                ],
-              ),
-              SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Số lượng",
+
+                  const SizedBox(height: 24),
+                  const Divider(height: 1, color: Colors.grey),
+                  const SizedBox(height: 12),
+
+                  // MÀU SẮC
+                  const Text(
+                    "Màu sắc",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
-                  Obx(
-                    () => Row(
-                      children: [
-                        _quantityButton(
-                          icon: Icons.remove,
-                          onTap: controller.decrementQuantity,
-                          isEnabled: controller.selectedQuantity.value > 1,
-                        ),
-                        SizedBox(width: 16),
-                        Text(
-                          '${controller.selectedQuantity.value}',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                        _quantityButton(
-                          icon: Icons.add,
-                          onTap: controller.incrementQuantity,
-                          isEnabled: true,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Spacer(),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColor.primary,
-                    elevation: 0,
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  const SizedBox(height: 8),
+                  Row(
                     children: [
-                      Icon(
-                        Icons.add_shopping_cart,
+                      _colorOption(
                         color: Colors.white,
-                        size: 18,
+                        borderColor: Colors.grey.shade300,
+                        colorName: 'Trắng',
                       ),
-                      SizedBox(width: 6),
-                      Text(
-                        'Thêm vào giỏ hàng',
+                      const SizedBox(width: 16),
+                      _colorOption(color: Colors.red, colorName: 'Đỏ'),
+                      const SizedBox(width: 16),
+                      _colorOption(color: Colors.black, colorName: 'Đen'),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // KÍCH THƯỚC
+                  const Text(
+                    "Kích thước",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      _sizeOption(size: 'M'),
+                      const SizedBox(width: 16),
+                      _sizeOption(size: 'L'),
+                      const SizedBox(width: 16),
+                      _sizeOption(size: 'XL'),
+                    ],
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  // SỐ LƯỢNG
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Số lượng",
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      Obx(
+                        () => Row(
+                          children: [
+                            _quantityButton(
+                              icon: Icons.remove,
+                              onTap: controller.decrementQuantity,
+                              isEnabled: controller.selectedQuantity.value > 1,
+                            ),
+                            const SizedBox(width: 16),
+                            Text(
+                              '${controller.selectedQuantity.value}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            _quantityButton(
+                              icon: Icons.add,
+                              onTap: controller.incrementQuantity,
+                              isEnabled: true,
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                ),
+
+                  const SizedBox(height: 70),
+
+                  // NÚT THÊM GIỎ
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColor.primary,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.add_shopping_cart,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                          SizedBox(width: 6),
+                          Text(
+                            'Thêm vào giỏ hàng',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 16),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -1120,9 +1138,7 @@ class _ProductCard extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           color:
-              isEnabled
-                  ? AppColor.primary.withAlpha(1)
-                  : Colors.grey.shade100,
+              isEnabled ? AppColor.primary.withAlpha(1) : Colors.grey.shade100,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: buttonColor, width: 1.5),
           boxShadow: [

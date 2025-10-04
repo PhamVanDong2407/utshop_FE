@@ -7,6 +7,7 @@ class CustomDialog {
   static void show({
     required BuildContext context,
     required String title,
+    required Color color,
     required String content,
     required void Function() onPressed,
   }) {
@@ -72,7 +73,7 @@ class CustomDialog {
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColor.primary,
+                        backgroundColor: color,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
