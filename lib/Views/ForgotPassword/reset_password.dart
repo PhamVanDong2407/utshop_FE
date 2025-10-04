@@ -42,7 +42,7 @@ class ResetPassword extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.black.withOpacity(0.6),
+                  color: Colors.black.withAlpha(6),
                 ),
               ),
               const SizedBox(height: 24),
@@ -167,7 +167,7 @@ class ResetPassword extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 3,
-                    shadowColor: AppColor.primary.withOpacity(0.4),
+                    shadowColor: AppColor.primary.withAlpha(4),
                   ),
                   child: const Text(
                     'Đặt lại mật khẩu',

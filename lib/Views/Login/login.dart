@@ -20,13 +20,13 @@ class Login extends StatelessWidget {
         color: AppColor.primary,
         fontWeight: FontWeight.w500,
       ),
-      hintStyle: TextStyle(color: AppColor.primary.withOpacity(0.5)),
+      hintStyle: TextStyle(color: AppColor.primary.withAlpha(5)),
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: AppColor.primary.withOpacity(0.3)),
+        borderSide: BorderSide(color: AppColor.primary.withAlpha(3)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -72,7 +72,7 @@ class Login extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        color: AppColor.black.withOpacity(0.6),
+                        color: AppColor.black.withAlpha(6),
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -146,7 +146,7 @@ class Login extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               elevation: 3,
-                              shadowColor: AppColor.primary.withOpacity(0.4),
+                              shadowColor: AppColor.primary.withAlpha(4),
                             ),
                             child: Text(
                               'Đăng nhập',
@@ -190,7 +190,7 @@ class Login extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Divider(
-                                color: AppColor.black.withOpacity(0.2),
+                                color: AppColor.black.withAlpha(2),
                               ),
                             ),
                             Padding(
@@ -202,13 +202,13 @@ class Login extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: DeviceHelper.getFontSize(16),
                                   fontWeight: FontWeight.w500,
-                                  color: AppColor.black.withOpacity(0.6),
+                                  color: AppColor.black.withAlpha(6),
                                 ),
                               ),
                             ),
                             Expanded(
                               child: Divider(
-                                color: AppColor.black.withOpacity(0.2),
+                                color: AppColor.black.withAlpha(2),
                               ),
                             ),
                           ],
@@ -271,7 +271,7 @@ class Login extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: AppColor.primary.withOpacity(0.1),
+            color: AppColor.primary.withAlpha(1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

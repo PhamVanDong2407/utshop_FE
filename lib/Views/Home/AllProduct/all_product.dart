@@ -135,7 +135,7 @@ class _ProductCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withAlpha(50),
               blurRadius: 6,
               offset: Offset(0, 3),
             ),
@@ -174,7 +174,7 @@ class _ProductCard extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withAlpha(8),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -448,7 +448,7 @@ class _ProductCard extends StatelessWidget {
               shape: BoxShape.circle,
               color:
                   controller.selectedSize.value == size
-                      ? AppColor.primary.withOpacity(0.1)
+                      ? AppColor.primary.withAlpha(1)
                       : Colors.grey.shade100,
               border: Border.all(
                 color:
@@ -460,7 +460,7 @@ class _ProductCard extends StatelessWidget {
               boxShadow: [
                 if (controller.selectedSize.value == size)
                   BoxShadow(
-                    color: AppColor.primary.withOpacity(0.3),
+                    color: AppColor.primary.withAlpha(3),
                     blurRadius: 6,
                     offset: Offset(0, 2),
                   ),
@@ -517,7 +517,7 @@ class _ProductCard extends StatelessWidget {
                   boxShadow: [
                     if (isSelected)
                       BoxShadow(
-                        color: AppColor.primary.withOpacity(0.3),
+                        color: AppColor.primary.withAlpha(3),
                         blurRadius: 6,
                         offset: Offset(0, 2),
                       ),
@@ -567,14 +567,14 @@ class _ProductCard extends StatelessWidget {
         decoration: BoxDecoration(
           color:
               isEnabled
-                  ? AppColor.primary.withOpacity(0.1)
+                  ? AppColor.primary.withAlpha(1)
                   : Colors.grey.shade100,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: buttonColor, width: 1.5),
           boxShadow: [
             if (isEnabled)
               BoxShadow(
-                color: AppColor.primary.withOpacity(0.2),
+                color: AppColor.primary.withAlpha(2),
                 blurRadius: 4,
                 offset: Offset(0, 2),
               ),

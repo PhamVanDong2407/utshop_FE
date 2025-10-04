@@ -42,7 +42,7 @@ class ProductDetail extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
+                    color: Colors.black.withAlpha(80),
                     blurRadius: 6,
                     offset: const Offset(0, 3),
                   ),
@@ -83,7 +83,7 @@ class ProductDetail extends StatelessWidget {
                       color:
                           controller.currentPage.value == index
                               ? AppColor.primary
-                              : Colors.grey.withOpacity(0.5),
+                              : Colors.grey.withAlpha(5),
                     ),
                   ),
                 ),
@@ -115,7 +115,7 @@ class ProductDetail extends StatelessWidget {
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.08),
+                                color: Colors.black.withAlpha(80),
                                 blurRadius: 4,
                                 offset: const Offset(0, 2),
                               ),
@@ -405,7 +405,7 @@ class ProductDetail extends StatelessWidget {
               shape: BoxShape.circle,
               color:
                   controller.selectedSize.value == size
-                      ? AppColor.primary.withOpacity(0.1)
+                      ? AppColor.primary.withAlpha(1)
                       : Colors.grey.shade100,
               border: Border.all(
                 color:
@@ -417,7 +417,7 @@ class ProductDetail extends StatelessWidget {
               boxShadow: [
                 if (controller.selectedSize.value == size)
                   BoxShadow(
-                    color: AppColor.primary.withOpacity(0.2),
+                    color: AppColor.primary.withAlpha(2),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -474,7 +474,7 @@ class ProductDetail extends StatelessWidget {
                   boxShadow: [
                     if (isSelected)
                       BoxShadow(
-                        color: AppColor.primary.withOpacity(0.2),
+                        color: AppColor.primary.withAlpha(2),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -524,14 +524,14 @@ class ProductDetail extends StatelessWidget {
         decoration: BoxDecoration(
           color:
               isEnabled
-                  ? AppColor.primary.withOpacity(0.1)
+                  ? AppColor.primary.withAlpha(1)
                   : Colors.grey.shade100,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: buttonColor, width: 1.5),
           boxShadow: [
             if (isEnabled)
               BoxShadow(
-                color: AppColor.primary.withOpacity(0.2),
+                color: AppColor.primary.withAlpha(2),
                 blurRadius: 4,
                 offset: Offset(0, 2),
               ),

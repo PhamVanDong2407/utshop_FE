@@ -37,7 +37,7 @@ class OrderHistory extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12.0),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withAlpha(50),
                       blurRadius: 6,
                       offset: Offset(0, 3),
                     ),

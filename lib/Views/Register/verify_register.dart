@@ -45,7 +45,7 @@ class VerifyRegister extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.black.withOpacity(0.6),
+                  color: Colors.black.withAlpha(6),
                 ),
               ),
               const SizedBox(height: 4),
@@ -54,7 +54,7 @@ class VerifyRegister extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.blue.withOpacity(0.6),
+                  color: Colors.blue.withAlpha(6),
                 ),
               ),
               const SizedBox(height: 16),
@@ -127,7 +127,7 @@ class VerifyRegister extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 3,
-                    shadowColor: AppColor.primary.withOpacity(0.4),
+                    shadowColor: AppColor.primary.withAlpha(4),
                   ),
                   child: const Text(
                     'Xác nhận',

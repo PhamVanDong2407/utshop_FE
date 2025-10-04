@@ -26,7 +26,7 @@ class Cart extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16.0),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withAlpha(1),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -48,7 +48,7 @@ class Cart extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10.0),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black12.withOpacity(0.05),
+                                      color: Colors.black12.withAlpha(50),
                                       offset: const Offset(0, 2),
                                       blurRadius: 5,
                                     ),
@@ -256,14 +256,14 @@ class Cart extends StatelessWidget {
         decoration: BoxDecoration(
           color:
               isEnabled
-                  ? AppColor.primary.withOpacity(0.1)
+                  ? AppColor.primary.withAlpha(1)
                   : Colors.grey.shade200,
           shape: BoxShape.circle,
           border: Border.all(color: buttonColor, width: 1.5),
           boxShadow: [
             if (isEnabled)
               BoxShadow(
-                color: AppColor.primary.withOpacity(0.2),
+                color: AppColor.primary.withAlpha(2),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),

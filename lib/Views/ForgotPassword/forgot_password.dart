@@ -18,13 +18,13 @@ class ForgotPassword extends StatelessWidget {
         color: AppColor.primary,
         fontWeight: FontWeight.w500,
       ),
-      hintStyle: TextStyle(color: AppColor.primary.withOpacity(0.5)),
+      hintStyle: TextStyle(color: AppColor.primary.withAlpha(5)),
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: AppColor.primary.withOpacity(0.3)),
+        borderSide: BorderSide(color: AppColor.primary.withAlpha(3)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -76,7 +76,7 @@ class ForgotPassword extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.black.withOpacity(0.6),
+                  color: Colors.black.withAlpha(6),
                 ),
               ),
               const SizedBox(height: 24),
