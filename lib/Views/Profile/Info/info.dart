@@ -23,105 +23,107 @@ class Info extends StatelessWidget {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
       ),
-      body: Stack(
-        children: [
-          Form(
-            key: _formKey,
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              children: [
-                _buildAvatar(),
-                const SizedBox(height: 16),
-                _sectionTitle("Thông tin cá nhân"),
-                _inputField(
-                  label: "Họ và tên",
-                  hint: "Nhập họ và tên",
-                  controller: controller.name,
-                  validator:
-                      (v) =>
-                          (v == null || v.isEmpty)
-                              ? "Vui lòng nhập họ và tên"
-                              : null,
-                ),
-                _inputField(
-                  label: "Số điện thoại",
-                  hint: "Nhập số điện thoại",
-                  controller: controller.phone,
-                  validator:
-                      (v) =>
-                          (v == null || v.isEmpty)
-                              ? "Vui lòng nhập số điện thoại"
-                              : null,
-                  keyboardType: TextInputType.phone,
-                ),
-                _inputField(
-                  label: "Email",
-                  hint: "Nhập email",
-                  controller: controller.email,
-                  validator: (v) {
-                    if (v != null && v.isNotEmpty) {
-                      final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                      if (!emailRegex.hasMatch(v)) {
-                        return "Vui lòng nhập email hợp lệ";
-                      }
-                    }
-                    return null;
-                  },
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                _dateField(context, controller.birthDay),
-                _genderSelector(),
-
-                _sectionTitle("Địa chỉ"),
-                _inputField(
-                  label: "Tỉnh/Thành phố",
-                  hint: "Nhập Tỉnh/Thành phố",
-                  controller: controller.province,
-                ),
-                _inputField(
-                  label: "Xã/Thị trấn",
-                  hint: "Nhập Xã/Thị trấn",
-                  controller: controller.district,
-                ),
-                _inputField(
-                  label: "Địa chỉ chi tiết",
-                  hint: "Nhập địa chỉ chi tiết",
-                  controller: controller.address,
-                ),
-                const SizedBox(height: 80),
-              ],
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          children: [
+            _buildAvatar(),
+            const SizedBox(height: 16),
+            _sectionTitle("Thông tin cá nhân"),
+            _inputField(
+              label: "Họ và tên",
+              hint: "Nhập họ và tên",
+              controller: controller.name,
+              validator:
+                  (v) =>
+                      (v == null || v.isEmpty)
+                          ? "Vui lòng nhập họ và tên"
+                          : null,
             ),
-          ),
-
-          // Nút cập nhật
-          Positioned(
-            left: 16,
-            right: 16,
-            bottom: 32,
-            child: SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    controller.submit();
+            _inputField(
+              label: "Số điện thoại",
+              hint: "Nhập số điện thoại",
+              controller: controller.phone,
+              validator:
+                  (v) =>
+                      (v == null || v.isEmpty)
+                          ? "Vui lòng nhập số điện thoại"
+                          : null,
+              keyboardType: TextInputType.phone,
+            ),
+            _inputField(
+              label: "Email",
+              hint: "Nhập email",
+              controller: controller.email,
+              validator: (v) {
+                if (v != null && v.isNotEmpty) {
+                  final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                  if (!emailRegex.hasMatch(v)) {
+                    return "Vui lòng nhập email hợp lệ";
                   }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColor.primary,
-                  foregroundColor: AppColor.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text(
-                  "Cập nhật hồ sơ",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
+                }
+                return null;
+              },
+              keyboardType: TextInputType.emailAddress,
+            ),
+            _dateField(context, controller.birthDay),
+            _genderSelector(),
+
+            _sectionTitle("Địa chỉ"),
+            _inputField(
+              label: "Tỉnh/Thành phố",
+              hint: "Nhập Tỉnh/Thành phố",
+              controller: controller.province,
+            ),
+            _inputField(
+              label: "Xã/Thị trấn",
+              hint: "Nhập Xã/Thị trấn",
+              controller: controller.district,
+            ),
+            _inputField(
+              label: "Địa chỉ chi tiết",
+              hint: "Nhập địa chỉ chi tiết",
+              controller: controller.address,
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 12,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+        child: SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                controller.submit();
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColor.primary,
+              foregroundColor: AppColor.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
+            child: const Text(
+              "Cập nhật hồ sơ",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -252,26 +254,34 @@ class Info extends StatelessWidget {
                 children: [
                   Expanded(
                     child: RadioListTile<int>(
-                      title: const Text('Nam'),
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      visualDensity: VisualDensity(
+                        horizontal: -4,
+                        vertical: -4,
+                      ),
+                      title: const Text('Nam', style: TextStyle(fontSize: 14)),
                       value: 0,
                       groupValue: controller.gender.value,
                       onChanged: (value) {
-                        if (value != null) {
-                          controller.gender.value = value;
-                        }
+                        if (value != null) controller.gender.value = value;
                       },
                       activeColor: AppColor.primary,
                     ),
                   ),
                   Expanded(
                     child: RadioListTile<int>(
-                      title: const Text('Nữ'),
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      visualDensity: VisualDensity(
+                        horizontal: -4,
+                        vertical: -4,
+                      ),
+                      title: const Text('Nữ', style: TextStyle(fontSize: 14)),
                       value: 1,
                       groupValue: controller.gender.value,
                       onChanged: (value) {
-                        if (value != null) {
-                          controller.gender.value = value;
-                        }
+                        if (value != null) controller.gender.value = value;
                       },
                       activeColor: AppColor.primary,
                     ),

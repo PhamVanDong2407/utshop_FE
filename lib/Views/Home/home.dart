@@ -625,7 +625,7 @@ class Home extends StatelessWidget {
               itemCount: 10,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.58,
+                childAspectRatio: 0.48,
                 crossAxisSpacing: 12.0,
                 mainAxisSpacing: 12.0,
               ),
