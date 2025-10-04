@@ -105,7 +105,9 @@ class Profile extends StatelessWidget {
                 _buildMenuItem(
                   title: 'Lịch sử đơn hàng',
                   icon: Icons.history,
-                  onTap: () {},
+                  onTap: () {
+                    Get.toNamed(Routes.orderHistory);
+                  },
                 ),
                 _buildMenuItem(
                   title: 'Địa chỉ giao hàng',
