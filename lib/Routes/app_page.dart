@@ -10,6 +10,7 @@ import 'package:utshop/Views/Home/home.dart';
 import 'package:utshop/Views/Login/login.dart';
 import 'package:utshop/Views/Profile/ChangePassword/change_password.dart';
 import 'package:utshop/Views/Profile/Info/info.dart';
+import 'package:utshop/Views/Profile/OrderHistory/DetailOrderHistory/detail_order_history.dart';
 import 'package:utshop/Views/Profile/OrderHistory/order_history.dart';
 import 'package:utshop/Views/Profile/profile.dart';
 import 'package:utshop/Views/Register/register.dart';
@@ -45,6 +46,7 @@ class AppPage {
     GetPage(name: Routes.profile, page: () => Profile()),
     GetPage(name: Routes.info, page: () => Info()),
     GetPage(name: Routes.orderHistory, page: () => OrderHistory()),
+    GetPage(name: Routes.detailOrderHistory, page: () => DetailOrderHistory()),
     GetPage(name: Routes.changePassword, page: () => ChangePassword()),
   ];
 }

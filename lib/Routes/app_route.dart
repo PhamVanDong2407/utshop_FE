@@ -20,6 +20,7 @@ abstract class Routes {
   static const profile = _Paths.profile;
   static const info = _Paths.info;
   static const orderHistory = _Paths.orderHistory;
+  static const detailOrderHistory = _Paths.detailOrderHistory;
   static const changePassword = _Paths.changePassword;
 }
 
@@ -43,5 +44,6 @@ abstract class _Paths {
   static const String profile = '/profile';
   static const String info = '/info';
   static const String orderHistory = '/order-history';
+  static const String detailOrderHistory = '/detail-order-history';
   static const String changePassword = '/change-password';
 }
