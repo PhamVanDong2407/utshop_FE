@@ -19,14 +19,15 @@ class ProductDetail extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColor.background,
       appBar: AppBar(
-        foregroundColor: AppColor.black,
+        foregroundColor: AppColor.white,
+        backgroundColor: AppColor.primary,
         elevation: 0,
         title: const Text(
           "Chi tiết sản phẩm",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 24),
+          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
           onPressed: () => Get.back(),
         ),
       ),
