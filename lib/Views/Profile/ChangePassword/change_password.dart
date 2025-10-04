@@ -206,6 +206,7 @@ class ChangePassword extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(height: 20),
           ],
         ),
       ),
