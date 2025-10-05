@@ -14,6 +14,7 @@ class Splash extends StatelessWidget {
       body: Stack(
         alignment: Alignment.center,
         children: [
+          // Nền trắng
           Container(
             width: double.infinity,
             height: double.infinity,
@@ -24,14 +25,44 @@ class Splash extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/images/logoU.png', width: 100, height: 100),
+                AnimatedOpacity(
+                  opacity: 1,
+                  duration: const Duration(seconds: 1),
+                  child: Image.asset(
+                    'assets/images/logoU.png',
+                    width: 110,
+                    height: 110,
+                  ),
+                ),
                 const SizedBox(height: 20),
-                const Text(
-                  'Chào mừng bạn đến với UTShop',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                AnimatedOpacity(
+                  opacity: 1,
+                  duration: const Duration(seconds: 2),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      children: const [
+                        Text(
+                          'UTShop',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'Thế giới thời trang thể thao trong tay bạn',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
