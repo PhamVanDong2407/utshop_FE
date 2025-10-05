@@ -59,7 +59,7 @@ class ForgotPassword extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 32),
+              SizedBox(height: 24),
               SvgPicture.asset('assets/icons/shield-security.svg'),
               const SizedBox(height: 8),
               Text(
@@ -74,10 +74,7 @@ class ForgotPassword extends StatelessWidget {
               Text(
                 'Vui lòng nhập địa chỉ email của bạn để đặt lại mật khẩu.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.black.withAlpha(6),
-                ),
+                style: TextStyle(fontSize: 13, color: Colors.black),
               ),
               const SizedBox(height: 24),
               Form(
@@ -97,7 +94,7 @@ class ForgotPassword extends StatelessWidget {
                   },
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 height: 48,

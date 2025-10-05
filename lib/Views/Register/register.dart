@@ -74,7 +74,7 @@ class Register extends StatelessWidget {
                 'Hãy điền thông tin để bắt đầu',
                 style: TextStyle(
                   fontSize: 16,
-                  color: AppColor.black.withAlpha(6),
+                  color: AppColor.black,
                 ),
               ),
               const SizedBox(height: 32),
@@ -175,7 +175,7 @@ class Register extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: AppColor.black.withAlpha(7),
+                      color: AppColor.black,
                     ),
                   ),
                   activeColor: AppColor.primary,
@@ -232,7 +232,7 @@ class Register extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Divider(color: AppColor.black.withAlpha(2)),
+                    child: Divider(color: AppColor.black),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -240,12 +240,13 @@ class Register extends StatelessWidget {
                       'Hoặc',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppColor.black.withAlpha(6),
+                        color: AppColor.primary,
+                        fontWeight: FontWeight.bold
                       ),
                     ),
                   ),
                   Expanded(
-                    child: Divider(color: AppColor.black.withAlpha(2)),
+                    child: Divider(color: AppColor.black),
                   ),
                 ],
               ),

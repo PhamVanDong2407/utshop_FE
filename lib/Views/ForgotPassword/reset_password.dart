@@ -42,10 +42,10 @@ class ResetPassword extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.black.withAlpha(6),
+                  color: Colors.black,
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 8),
               Form(
                 key: _formKey,
                 child: Column(

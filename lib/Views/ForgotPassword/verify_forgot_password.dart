@@ -45,7 +45,7 @@ class VerifyForgotPassword extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.black.withAlpha(6),
+                  color: Colors.black,
                 ),
               ),
               const SizedBox(height: 4),
@@ -54,7 +54,7 @@ class VerifyForgotPassword extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.blue.withAlpha(6),
+                  color: Colors.blue,
                 ),
               ),
               const SizedBox(height: 16),

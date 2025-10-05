@@ -72,7 +72,7 @@ class Login extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        color: AppColor.black.withAlpha(6),
+                        color: AppColor.black,
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -190,7 +190,7 @@ class Login extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Divider(
-                                color: AppColor.black.withAlpha(2),
+                                color: AppColor.black,
                               ),
                             ),
                             Padding(
@@ -202,13 +202,13 @@ class Login extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: DeviceHelper.getFontSize(16),
                                   fontWeight: FontWeight.w500,
-                                  color: AppColor.black.withAlpha(6),
+                                  color: AppColor.primary,
                                 ),
                               ),
                             ),
                             Expanded(
                               child: Divider(
-                                color: AppColor.black.withAlpha(2),
+                                color: AppColor.black,
                               ),
                             ),
                           ],
