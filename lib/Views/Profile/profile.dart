@@ -119,7 +119,9 @@ class Profile extends StatelessWidget {
                 _buildMenuItem(
                   title: 'Kho Voucher',
                   icon: Icons.card_giftcard,
-                  onTap: () {},
+                  onTap: () {
+                    Get.toNamed(Routes.voucher);
+                  },
                 ),
                 _buildMenuItem(
                   title: 'Đổi mật khẩu',

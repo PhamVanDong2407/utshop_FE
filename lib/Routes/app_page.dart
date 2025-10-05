@@ -13,6 +13,7 @@ import 'package:utshop/Views/Profile/DeliveryAddress/delivery_address.dart';
 import 'package:utshop/Views/Profile/Info/info.dart';
 import 'package:utshop/Views/Profile/OrderHistory/DetailOrderHistory/detail_order_history.dart';
 import 'package:utshop/Views/Profile/OrderHistory/order_history.dart';
+import 'package:utshop/Views/Profile/Voucher/voucher.dart';
 import 'package:utshop/Views/Profile/profile.dart';
 import 'package:utshop/Views/Register/register.dart';
 import 'package:utshop/Views/Register/verify_register.dart';
@@ -49,6 +50,7 @@ class AppPage {
     GetPage(name: Routes.orderHistory, page: () => OrderHistory()),
     GetPage(name: Routes.detailOrderHistory, page: () => DetailOrderHistory()),
     GetPage(name: Routes.deliveryAddress, page: () => DeliveryAddress()),
+    GetPage(name: Routes.voucher, page: ()=> Voucher()),
     GetPage(name: Routes.changePassword, page: () => ChangePassword()),
   ];
 }
