@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:utshop/Views/Cart/ConfirmOrder/confirm_order.dart';
 import 'package:utshop/Views/Cart/cart.dart';
 import 'package:utshop/Views/ForgotPassword/forgot_password.dart';
 import 'package:utshop/Views/ForgotPassword/reset_password.dart';
@@ -45,6 +46,7 @@ class AppPage {
     GetPage(name: Routes.productDetail, page: () => ProductDetail()),
     GetPage(name: Routes.wishlish, page: () => Wishlish()),
     GetPage(name: Routes.cart, page: () => Cart()),
+    GetPage(name: Routes.confirmOrder, page: () => ConfirmOrder()),
     GetPage(name: Routes.profile, page: () => Profile()),
     GetPage(name: Routes.info, page: () => Info()),
     GetPage(name: Routes.orderHistory, page: () => OrderHistory()),
