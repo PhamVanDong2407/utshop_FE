@@ -303,7 +303,7 @@ class Register extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: AppColor.primary.withAlpha(1),
+            color: AppColor.primary.withAlpha(50),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

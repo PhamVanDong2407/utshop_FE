@@ -164,33 +164,29 @@ class DeliveryAddress extends StatelessWidget {
           ],
         ),
         width: double.infinity,
-        height: 80,
+        height: 70,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: ElevatedButton(
-            onPressed: () {
-              _addDeliveryAddress(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
+        child: ElevatedButton(
+          onPressed: () {
+            _addDeliveryAddress(context);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
             ),
-            child: const Text(
-              'Thêm địa chỉ giao hàng',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
+          ),
+          child: const Text(
+            'Thêm địa chỉ giao hàng',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
-      ),
+      ).paddingOnly(bottom: 20),
     );
   }
 
@@ -200,132 +196,137 @@ class DeliveryAddress extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.75,
-          maxChildSize: 0.9,
-          minChildSize: 0.4,
-          builder: (context, scrollController) {
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 12,
-                    offset: Offset(0, -4),
-                  ),
-                ],
+        final screenHeight = MediaQuery.of(context).size.height;
+        return Container(
+          height: screenHeight * 0.75, // Height cố định
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 12,
+                offset: Offset(0, -4),
               ),
-              child: SingleChildScrollView(
-                controller: scrollController,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 5,
-                        margin: const EdgeInsets.only(bottom: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 5,
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(4),
                     ),
-                    const SizedBox(height: 8),
-                    Center(
-                      child: Text(
-                        "Thêm địa chỉ giao hàng",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColor.text1,
-                        ),
-                      ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Center(
+                  child: Text(
+                    "Thêm địa chỉ giao hàng",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColor.text1,
                     ),
-                    const SizedBox(height: 24),
+                  ),
+                ),
+                const SizedBox(height: 24),
 
-                    _inputField(
-                      label: "Tên khách hàng",
-                      hint: "Nhập tên khách hàng",
-                      icon: Icons.person_outline,
-                    ),
-                    _inputField(
-                      label: "Số điện thoại",
-                      hint: "Nhập số điện thoại",
-                      keyboardType: TextInputType.phone,
-                      icon: Icons.phone_outlined,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "Địa chỉ",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppColor.text1,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    _inputField(
-                      label: "Tỉnh/Thành phố",
-                      hint: "Nhập Tỉnh/Thành phố",
-                      icon: Icons.location_city_outlined,
-                    ),
-                    _inputField(
-                      label: "Xã/Thị trấn",
-                      hint: "Nhập Xã/Thị trấn",
-                      icon: Icons.location_on_outlined,
-                    ),
-                    _inputField(
-                      label: "Địa chỉ chi tiết",
-                      hint: "Nhập địa chỉ chi tiết",
-                      icon: Icons.home_outlined,
-                    ),
-                    const SizedBox(height: 28),
-
-                    // Button
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Colors.green, Colors.lightGreen],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
+                Expanded(
+                  // Sử dụng Expanded để nội dung fit trong height cố định
+                  child: SingleChildScrollView(
+                    // Giữ SingleChildScrollView nếu nội dung dài, nhưng không kéo bottom sheet
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _inputField(
+                          label: "Tên khách hàng",
+                          hint: "Nhập tên khách hàng",
+                          icon: Icons.person_outline,
+                        ),
+                        _inputField(
+                          label: "Số điện thoại",
+                          hint: "Nhập số điện thoại",
+                          keyboardType: TextInputType.phone,
+                          icon: Icons.phone_outlined,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Địa chỉ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColor.text1,
+                            fontSize: 16,
                           ),
+                        ),
+                        const SizedBox(height: 8),
+                        _inputField(
+                          label: "Tỉnh/Thành phố",
+                          hint: "Nhập Tỉnh/Thành phố",
+                          icon: Icons.location_city_outlined,
+                        ),
+                        _inputField(
+                          label: "Xã/Thị trấn",
+                          hint: "Nhập Xã/Thị trấn",
+                          icon: Icons.location_on_outlined,
+                        ),
+                        _inputField(
+                          label: "Địa chỉ chi tiết",
+                          hint: "Nhập địa chỉ chi tiết",
+                          icon: Icons.home_outlined,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 28),
+
+                // Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Colors.green, Colors.lightGreen],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text(
-                            'Lưu địa chỉ',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+                      ),
+                      child: const Text(
+                        'Lưu địa chỉ',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            );
-          },
+                  ),
+                ).marginOnly(bottom: 20),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -337,132 +338,137 @@ class DeliveryAddress extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.75,
-          maxChildSize: 0.9,
-          minChildSize: 0.4,
-          builder: (context, scrollController) {
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 12,
-                    offset: Offset(0, -4),
-                  ),
-                ],
+        final screenHeight = MediaQuery.of(context).size.height;
+        return Container(
+          height: screenHeight * 0.75, // Height cố định
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 12,
+                offset: Offset(0, -4),
               ),
-              child: SingleChildScrollView(
-                controller: scrollController,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 5,
-                        margin: const EdgeInsets.only(bottom: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 5,
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(4),
                     ),
-                    const SizedBox(height: 8),
-                    Center(
-                      child: Text(
-                        "Chỉnh sửa địa chỉ giao hàng",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColor.text1,
-                        ),
-                      ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Center(
+                  child: Text(
+                    "Chỉnh sửa địa chỉ giao hàng",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColor.text1,
                     ),
-                    const SizedBox(height: 24),
+                  ),
+                ),
+                const SizedBox(height: 24),
 
-                    _inputField(
-                      label: "Tên khách hàng",
-                      hint: "Nhập tên khách hàng",
-                      icon: Icons.person_outline,
-                    ),
-                    _inputField(
-                      label: "Số điện thoại",
-                      hint: "Nhập số điện thoại",
-                      keyboardType: TextInputType.phone,
-                      icon: Icons.phone_outlined,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "Địa chỉ",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppColor.text1,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    _inputField(
-                      label: "Tỉnh/Thành phố",
-                      hint: "Nhập Tỉnh/Thành phố",
-                      icon: Icons.location_city_outlined,
-                    ),
-                    _inputField(
-                      label: "Xã/Thị trấn",
-                      hint: "Nhập Xã/Thị trấn",
-                      icon: Icons.location_on_outlined,
-                    ),
-                    _inputField(
-                      label: "Địa chỉ chi tiết",
-                      hint: "Nhập địa chỉ chi tiết",
-                      icon: Icons.home_outlined,
-                    ),
-                    const SizedBox(height: 28),
-
-                    // Button
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Colors.green, Colors.lightGreen],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
+                Expanded(
+                  // Sử dụng Expanded để nội dung fit trong height cố định
+                  child: SingleChildScrollView(
+                    // Giữ SingleChildScrollView nếu nội dung dài, nhưng không kéo bottom sheet
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _inputField(
+                          label: "Tên khách hàng",
+                          hint: "Nhập tên khách hàng",
+                          icon: Icons.person_outline,
+                        ),
+                        _inputField(
+                          label: "Số điện thoại",
+                          hint: "Nhập số điện thoại",
+                          keyboardType: TextInputType.phone,
+                          icon: Icons.phone_outlined,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Địa chỉ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColor.text1,
+                            fontSize: 16,
                           ),
+                        ),
+                        const SizedBox(height: 8),
+                        _inputField(
+                          label: "Tỉnh/Thành phố",
+                          hint: "Nhập Tỉnh/Thành phố",
+                          icon: Icons.location_city_outlined,
+                        ),
+                        _inputField(
+                          label: "Xã/Thị trấn",
+                          hint: "Nhập Xã/Thị trấn",
+                          icon: Icons.location_on_outlined,
+                        ),
+                        _inputField(
+                          label: "Địa chỉ chi tiết",
+                          hint: "Nhập địa chỉ chi tiết",
+                          icon: Icons.home_outlined,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 28),
+
+                // Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Colors.green, Colors.lightGreen],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text(
-                            'Cập nhật địa chỉ',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+                      ),
+                      child: const Text(
+                        'Cập nhật địa chỉ',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            );
-          },
+                  ),
+                ).paddingOnly(bottom: 20),
+              ],
+            ),
+          ),
         );
       },
     );

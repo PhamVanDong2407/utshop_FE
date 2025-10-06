@@ -36,20 +36,20 @@ class ProductDetail extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 250,
+              height: MediaQuery.of(context).size.height * 0.3,
               margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withAlpha(80),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
+                    color: Colors.black.withAlpha(40),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
                 child: PageView.builder(
                   itemCount: productImages.length,
                   onPageChanged: (index) {
@@ -69,24 +69,55 @@ class ProductDetail extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Obx(
-              () => Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  productImages.length,
-                  (index) => AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    margin: const EdgeInsets.symmetric(horizontal: 3.0),
-                    width: controller.currentPage.value == index ? 16.0 : 6.0,
-                    height: 6.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      color:
-                          controller.currentPage.value == index
-                              ? AppColor.primary
-                              : Colors.grey.withAlpha(5),
+              () => Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      productImages.length,
+                      (index) => GestureDetector(
+                        onTap: () => controller.updatePage(index),
+                        child: AnimatedContainer(
+                          duration: const Duration(
+                            milliseconds: 300,
+                          ), // Animation mượt hơn
+                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                          width:
+                              controller.currentPage.value == index
+                                  ? 24.0
+                                  : 8.0, // Lớn hơn
+                          height: 8.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color:
+                                controller.currentPage.value == index
+                                    ? AppColor.primary
+                                    : Colors.grey.withAlpha(
+                                      100,
+                                    ), // Màu inactive rõ hơn
+                            boxShadow: [
+                              if (controller.currentPage.value == index)
+                                BoxShadow(
+                                  color: AppColor.primary.withAlpha(20),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "${controller.currentPage.value + 1}/${productImages.length}",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColor.grey,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 16),
@@ -325,7 +356,7 @@ class ProductDetail extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
@@ -386,7 +417,7 @@ class ProductDetail extends StatelessWidget {
               ),
             ),
           ],
-        ),
+        ).paddingOnly(bottom: 10),
       ),
     );
   }
@@ -523,9 +554,7 @@ class ProductDetail extends StatelessWidget {
         height: 36,
         decoration: BoxDecoration(
           color:
-              isEnabled
-                  ? AppColor.primary.withAlpha(1)
-                  : Colors.grey.shade100,
+              isEnabled ? AppColor.primary.withAlpha(1) : Colors.grey.shade100,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: buttonColor, width: 1.5),
           boxShadow: [

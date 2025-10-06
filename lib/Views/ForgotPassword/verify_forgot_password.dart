@@ -10,6 +10,34 @@ class VerifyForgotPassword extends StatelessWidget {
 
   final controller = Get.put(VerifyForgotPasswordController());
 
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(color: AppColor.primary.withAlpha(5)),
+      prefixIcon: Icon(Icons.lock_outline, color: AppColor.primary),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: AppColor.primary.withAlpha(3)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: AppColor.primary, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 1),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+      counterText: '',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +56,7 @@ class VerifyForgotPassword extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 32),
+              const SizedBox(height: 24),
               SvgPicture.asset('assets/icons/mess.svg'),
               const SizedBox(height: 8),
               const Text(
@@ -43,97 +71,91 @@ class VerifyForgotPassword extends StatelessWidget {
               Text(
                 'Chúng tôi đã gửi mã xác thực cho bạn qua địa chỉ email:',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.black,
-                ),
+                style: const TextStyle(fontSize: 13, color: Colors.black),
               ),
               const SizedBox(height: 4),
               Text(
                 controller.email,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.blue,
-                ),
+                style: const TextStyle(fontSize: 13, color: Colors.blue),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
+
+              // Form OTP
               Form(
                 key: controller.formKey,
-                child: ValueListenableBuilder<TextEditingValue>(
-                  valueListenable: controller.otpController,
-                  builder: (context, value, child) {
-                    return TextFormField(
-                      controller: controller.otpController,
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.left,
-                      maxLength: 6,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: InputDecoration(
-                        hintText: 'Mã xác nhận',
-                        prefixIcon: Icon(
-                          Icons.lock_outline,
-                          color: AppColor.primary,
-                        ),
-                        suffixIcon:
-                            value.text.length == 6
-                                ? Icon(Icons.check_circle, color: Colors.green)
-                                : null,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: AppColor.primary),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(
-                            color: AppColor.primary,
-                            width: 2,
-                          ),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 16,
-                        ),
-                        counterText: '',
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColor.primary.withAlpha(50),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Vui lòng nhập mã xác nhận';
-                        }
-                        if (value.length != 6) {
-                          return 'Mã xác nhận phải gồm 6 chữ số';
-                        }
-                        return null;
-                      },
-                    );
-                  },
+                    ],
+                  ),
+                  child: ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: controller.otpController,
+                    builder: (context, value, child) {
+                      return TextFormField(
+                        controller: controller.otpController,
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.left,
+                        maxLength: 6,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        decoration: _inputDecoration(
+                          'Nhập mã xác nhận',
+                        ).copyWith(
+                          suffixIcon:
+                              value.text.length == 6
+                                  ? const Icon(
+                                    Icons.check_circle,
+                                    color: Colors.green,
+                                  )
+                                  : null,
+                        ),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Vui lòng nhập mã xác nhận';
+                          }
+                          if (value.length != 6) {
+                            return 'Mã xác nhận phải gồm 6 chữ số';
+                          }
+                          return null;
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
-              const SizedBox(height: 16),
-              const Spacer(),
+
+              const SizedBox(height: 20),
+
               SizedBox(
                 width: double.infinity,
+                height: 48,
                 child: ElevatedButton(
                   onPressed: controller.verifyOTP,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColor.primary,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 3,
-                    shadowColor: AppColor.primary.withAlpha(4),
+                    shadowColor: AppColor.primary.withAlpha(50),
                   ),
                   child: const Text(
                     'Xác nhận',
                     style: TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:utshop/Controllers/Wishlist/wishlish_controller.dart';
 import 'package:utshop/Global/app_color.dart';
 
 class Wishlish extends StatelessWidget {
-  const Wishlish({super.key});
+  Wishlish({super.key});
+
+  final controller = Get.put(WishlishController());
 
   @override
   Widget build(BuildContext context) {
@@ -84,13 +90,30 @@ class Wishlish extends StatelessWidget {
 
                     Align(
                       alignment: Alignment.topRight,
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.heart_broken,
-                          color: Colors.red,
-                          size: 25,
+                      child: Obx(
+                        () => GestureDetector(
+                          onTap: () {
+                            controller.isFavorite.value =
+                                !controller.isFavorite.value;
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withAlpha(8),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              controller.isFavorite.value
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color:
+                                  controller.isFavorite.value
+                                      ? Colors.red
+                                      : AppColor.primary,
+                              size: 20,
+                            ),
+                          ),
                         ),
-                        onPressed: () {},
                       ),
                     ),
                   ],

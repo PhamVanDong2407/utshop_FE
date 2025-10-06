@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:utshop/Controllers/Cart/cart_controller.dart';
 import 'package:utshop/Global/app_color.dart';
+import 'package:utshop/Routes/app_page.dart';
 
 class Cart extends StatelessWidget {
   Cart({super.key});
@@ -204,7 +205,9 @@ class Cart extends StatelessWidget {
                   SizedBox(
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.toNamed(Routes.confirmOrder);
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColor.primary,
                         elevation: 0,
@@ -234,7 +237,7 @@ class Cart extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 40),
+          SizedBox(height: 70),
         ],
       ),
     );

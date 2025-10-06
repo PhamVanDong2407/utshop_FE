@@ -79,19 +79,31 @@ class ForgotPassword extends StatelessWidget {
               const SizedBox(height: 24),
               Form(
                 key: _formKey,
-                child: TextFormField(
-                  controller: controller.email,
-                  decoration: _inputDecoration('Email', 'Nhập email của bạn'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Vui lòng nhập email';
-                    }
-                    if (!GetUtils.isEmail(value)) {
-                      return 'Vui lòng nhập email hợp lệ';
-                    }
-                    return null;
-                  },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColor.primary.withAlpha(50),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: TextFormField(
+                    controller: controller.email,
+                    decoration: _inputDecoration('Email', 'Nhập email của bạn'),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Vui lòng nhập email';
+                      }
+                      if (!GetUtils.isEmail(value)) {
+                        return 'Vui lòng nhập email hợp lệ';
+                      }
+                      return null;
+                    },
+                  ),
                 ),
               ),
               const SizedBox(height: 20),

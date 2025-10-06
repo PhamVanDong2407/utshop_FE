@@ -622,10 +622,10 @@ class Home extends StatelessWidget {
             child: GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: 10,
+              itemCount: 6,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.48,
+                childAspectRatio: 0.56,
                 crossAxisSpacing: 12.0,
                 mainAxisSpacing: 12.0,
               ),
@@ -689,7 +689,7 @@ class _ProductCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(50),
+              color: Colors.black.withAlpha(20),
               blurRadius: 6,
               offset: Offset(0, 3),
             ),
@@ -767,42 +767,39 @@ class _ProductCard extends StatelessWidget {
                       fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: 8),
 
-                  SizedBox(
-                    width: double.infinity,
-                    height: 36,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _showBuyBottomSheet(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColor.primary,
-                        elevation: 0,
-                        padding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                  const SizedBox(height: 16),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      _showBuyBottomSheet(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.primary,
+                      elevation: 0,
+                      padding: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.shopping_bag_rounded,
+                          color: Colors.white,
+                          size: 18,
                         ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.shopping_bag_rounded,
+                        SizedBox(width: 6),
+                        Text(
+                          'Mua ngay',
+                          style: TextStyle(
                             color: Colors.white,
-                            size: 18,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
                           ),
-                          SizedBox(width: 6),
-                          Text(
-                            'Mua ngay',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -821,7 +818,7 @@ class _ProductCard extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.8,
+          initialChildSize: 0.66,
           expand: false,
           builder: (_, scrollController) {
             return Container(
