@@ -91,7 +91,7 @@ class DeliveryAddress extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Text("Tên khách hàng:"),
+                                Text("Tên người nhận:"),
                                 Spacer(),
                                 Text(
                                   "Phạm Văn Đông",
@@ -198,7 +198,7 @@ class DeliveryAddress extends StatelessWidget {
       builder: (BuildContext context) {
         final screenHeight = MediaQuery.of(context).size.height;
         return Container(
-          height: screenHeight * 0.75, // Height cố định
+          height: screenHeight * 0.75,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
@@ -240,9 +240,7 @@ class DeliveryAddress extends StatelessWidget {
                 const SizedBox(height: 24),
 
                 Expanded(
-                  // Sử dụng Expanded để nội dung fit trong height cố định
                   child: SingleChildScrollView(
-                    // Giữ SingleChildScrollView nếu nội dung dài, nhưng không kéo bottom sheet
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -288,7 +286,6 @@ class DeliveryAddress extends StatelessWidget {
                 ),
                 const SizedBox(height: 28),
 
-                // Button
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -340,7 +337,7 @@ class DeliveryAddress extends StatelessWidget {
       builder: (BuildContext context) {
         final screenHeight = MediaQuery.of(context).size.height;
         return Container(
-          height: screenHeight * 0.75, // Height cố định
+          height: screenHeight * 0.75,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
@@ -382,9 +379,7 @@ class DeliveryAddress extends StatelessWidget {
                 const SizedBox(height: 24),
 
                 Expanded(
-                  // Sử dụng Expanded để nội dung fit trong height cố định
                   child: SingleChildScrollView(
-                    // Giữ SingleChildScrollView nếu nội dung dài, nhưng không kéo bottom sheet
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -430,7 +425,6 @@ class DeliveryAddress extends StatelessWidget {
                 ),
                 const SizedBox(height: 28),
 
-                // Button
                 SizedBox(
                   width: double.infinity,
                   height: 50,
