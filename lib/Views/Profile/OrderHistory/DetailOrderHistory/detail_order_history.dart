@@ -358,27 +358,27 @@ class DetailOrderHistory extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Trạng thái: ',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColor.grey,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Đang xử lý',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColor.primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                // SizedBox(height: 4),
+                                // Row(
+                                //   children: [
+                                //     Text(
+                                //       'Trạng thái: ',
+                                //       style: TextStyle(
+                                //         fontSize: 13,
+                                //         fontWeight: FontWeight.w600,
+                                //         color: AppColor.grey,
+                                //       ),
+                                //     ),
+                                //     Text(
+                                //       'Đang xử lý',
+                                //       style: TextStyle(
+                                //         fontSize: 14,
+                                //         fontWeight: FontWeight.w600,
+                                //         color: AppColor.primary,
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
                                 SizedBox(height: 4),
                                 Wrap(
                                   spacing: 4,

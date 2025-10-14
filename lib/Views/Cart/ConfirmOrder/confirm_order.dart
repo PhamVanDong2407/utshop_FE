@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
-import 'package:utshop/Components/custom_dialog.dart';
 import 'package:utshop/Global/app_color.dart';
 
 class ConfirmOrder extends StatelessWidget {
