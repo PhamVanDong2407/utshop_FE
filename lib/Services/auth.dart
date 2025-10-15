@@ -45,28 +45,42 @@ class Auth {
         body: param,
       );
       if (response != null) {
-        GlobalValue.getInstance().setToken(
-          'Bearer ${response['tokens']['access_token']}',
-        );
+        int? permissionId = response['data']['permission'];
 
-        Utils.saveStringWithKey(
-          Constant.ACCESS_TOKEN,
-          response['tokens']['access_token'],
-        );
-        Utils.saveStringWithKey(
-          Constant.REFRESH_TOKEN,
-          response['tokens']['refresh_token'],
-        );
+        // Chỉ cho phép người dùng có permission_id khác 2 là (User) vào app
+        if (permissionId != 2) {
+          GlobalValue.getInstance().setToken(
+            'Bearer ${response['tokens']['access_token']}',
+          );
 
-        Utils.saveStringWithKey(Constant.NAME, response['data']['name'] ?? '');
-        Utils.saveStringWithKey(
-          Constant.AVATAR,
-          response['data']['avatar'] ?? '',
-        );
+          Utils.saveStringWithKey(
+            Constant.ACCESS_TOKEN,
+            response['tokens']['access_token'],
+          );
+          Utils.saveStringWithKey(
+            Constant.REFRESH_TOKEN,
+            response['tokens']['refresh_token'],
+          );
 
-        Utils.saveStringWithKey(Constant.EMAIL, email ?? emailPreferences);
-        Utils.saveStringWithKey(Constant.PASSWORD, hashedPassword);
-        Get.offAllNamed(Routes.dashboard);
+          Utils.saveStringWithKey(
+            Constant.NAME,
+            response['data']['name'] ?? '',
+          );
+          Utils.saveStringWithKey(
+            Constant.AVATAR,
+            response['data']['avatar'] ?? '',
+          );
+
+          Utils.saveStringWithKey(Constant.EMAIL, email ?? emailPreferences);
+          Utils.saveStringWithKey(Constant.PASSWORD, hashedPassword);
+          Get.offAllNamed(Routes.dashboard);
+        } else {
+          Utils.showSnackBar(
+            title: 'Lỗi',
+            message: 'Tài khoản của bạn không có quyền truy cập',
+          );
+          backLogin(true);
+        }
       } else {
         backLogin(true);
       }
