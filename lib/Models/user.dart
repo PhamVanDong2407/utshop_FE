@@ -6,7 +6,6 @@ class User {
   String? birthDay;
   String? phone;
   String? email;
-  String? username;
   String? province;
   String? district;
   String? address;
@@ -23,7 +22,6 @@ class User {
     this.birthDay,
     this.phone,
     this.email,
-    this.username,
     this.province,
     this.district,
     this.address,
@@ -41,7 +39,6 @@ class User {
     birthDay = json['birth_day'];
     phone = json['phone'];
     email = json['email'];
-    username = json['username'];
     province = json['province'];
     district = json['district'];
     address = json['address'];
@@ -63,7 +60,6 @@ class User {
     data['birth_day'] = birthDay;
     data['phone'] = phone;
     data['email'] = email;
-    data['username'] = username;
     data['province'] = province;
     data['district'] = district;
     data['address'] = address;
@@ -78,7 +74,7 @@ class User {
 }
 
 class Permission {
-  String? uuid;
+  int? uuid;
   String? name;
 
   Permission({this.uuid, this.name});
