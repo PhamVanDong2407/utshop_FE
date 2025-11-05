@@ -1,17 +1,22 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:utshop/Global/constant.dart';
+import 'package:utshop/Models/banners.dart';
+import 'package:utshop/Services/api_caller.dart';
 import 'package:utshop/Utils/utils.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class HomeController extends GetxController {
   RxString name = ''.obs;
   RxString avatar = ''.obs;
-  final String baseUrl = dotenv.env['API_URL'] ?? '';
+  final String baseUrl = Constant.BASE_URL_IMAGE;
   RxString searchQuery = ''.obs;
   RxString selectedFilter = 'Tất cả'.obs;
   RxString selectedColor = "".obs;
   RxString selectedSize = ''.obs;
   RxInt selectedQuantity = 1.obs;
+
+  // Banner
+  RxList<Banners> bannerList = <Banners>[].obs;
 
   @override
   void onInit() {
@@ -22,6 +27,7 @@ class HomeController extends GetxController {
     Utils.getStringValueWithKey(Constant.AVATAR).then((value) {
       avatar.value = baseUrl + value;
     });
+    getBannerList();
   }
 
   updateName(String name) {
@@ -51,6 +57,32 @@ class HomeController extends GetxController {
   void decrementQuantity() {
     if (selectedQuantity.value > 1) {
       selectedQuantity.value--;
+    }
+  }
+
+  Future<void> getBannerList() async {
+    try {
+      final response = await APICaller.getInstance().get('v1/banner');
+      final data = response?['data'] as List<dynamic>?;
+
+      bannerList.value =
+          (data ?? []).map((item) {
+            final banner = Banners.fromJson(item);
+            final path = banner.imageUrl;
+
+            if (path?.isNotEmpty == true) {
+              banner.imageUrl =
+                  path!.startsWith('http')
+                      ? path
+                      : path.startsWith('resources/')
+                      ? '$baseUrl$path'
+                      : '$baseUrl/$path';
+            }
+
+            return banner;
+          }).toList();
+    } catch (e) {
+      debugPrint('Error fetching banner list: $e');
     }
   }
 }

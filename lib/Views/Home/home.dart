@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-// Thêm import cho carousel_slider
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:intl/intl.dart';
 import 'package:utshop/Controllers/Home/home_controller.dart';
@@ -13,14 +12,6 @@ class Home extends StatelessWidget {
 
   final controller = Get.put(HomeController());
   final double horizontalPadding = 20.0;
-
-  // 1. Danh sách các đường dẫn ảnh banner
-  final List<String> bannerImages = [
-    'assets/images/banner1.png',
-    'assets/images/banner2.png',
-    'assets/images/banner3.png',
-    'assets/images/banner4.png',
-  ];
 
   final List<Map<String, dynamic>> popularProducts = [
     {
@@ -54,6 +45,23 @@ class Home extends StatelessWidget {
       'isFavorite': true.obs,
     },
   ];
+
+  Widget _buildBannerPlaceholder() {
+    return Container(
+      height: 150,
+      margin: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation(AppColor.primary),
+          strokeWidth: 2,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -480,45 +488,87 @@ class Home extends StatelessWidget {
             ),
           ),
           SizedBox(height: 16),
+
           // Phần Banner
-          CarouselSlider(
-            options: CarouselOptions(
-              height: 150.0,
-              autoPlay: true,
-              autoPlayInterval: Duration(seconds: 3),
-              enlargeCenterPage: true,
-              aspectRatio: 16 / 9,
-              viewportFraction: 0.85,
-              initialPage: 0,
-              reverse: false,
-              autoPlayCurve: Curves.fastOutSlowIn,
-              scrollDirection: Axis.horizontal,
-            ),
-            items:
-                bannerImages.map((i) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        margin: EdgeInsets.symmetric(horizontal: 5.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withAlpha(1),
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.0),
-                          child: Image.asset(i, fit: BoxFit.cover),
-                        ),
-                      );
-                    },
-                  );
-                }).toList(),
+          SizedBox(height: 16),
+          Obx(
+            () =>
+                controller.bannerList.isEmpty
+                    ? _buildBannerPlaceholder()
+                    : CarouselSlider(
+                      options: CarouselOptions(
+                        height: 150.0,
+                        autoPlay: controller.bannerList.length > 1, // chỉ chạy khi có nhiều hơn 1 banner
+                        autoPlayInterval: Duration(seconds: 3),
+                        enlargeCenterPage: true,
+                        aspectRatio: 16 / 9,
+                        viewportFraction: 0.85,
+                        initialPage: 0,
+                        reverse: false,
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        scrollDirection: Axis.horizontal,
+                      ),
+                      items:
+                          controller.bannerList.map((banner) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withAlpha(1),
+                                        blurRadius: 4,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    child: Image.network(
+                                      banner.imageUrl ?? '',
+                                      fit: BoxFit.cover,
+                                      loadingBuilder: (
+                                        context,
+                                        child,
+                                        loadingProgress,
+                                      ) {
+                                        if (loadingProgress == null) {
+                                          return child;
+                                        }
+                                        return Container(
+                                          color: Colors.grey[200],
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              valueColor:
+                                                  AlwaysStoppedAnimation(
+                                                    AppColor.primary,
+                                                  ),
+                                              strokeWidth: 2,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Container(
+                                                color: Colors.grey[200],
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.error,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          }).toList(),
+                    ),
           ),
 
           SizedBox(height: 16),
