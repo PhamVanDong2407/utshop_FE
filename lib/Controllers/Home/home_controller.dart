@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:utshop/Global/constant.dart';
 import 'package:utshop/Models/banners.dart';
+import 'package:utshop/Models/popularProduct.dart';
 import 'package:utshop/Services/api_caller.dart';
 import 'package:utshop/Utils/utils.dart';
 
@@ -18,6 +19,9 @@ class HomeController extends GetxController {
   // Banner
   RxList<Banners> bannerList = <Banners>[].obs;
 
+  // PopularProduct
+  RxList<ProductPopu> popularProductList = <ProductPopu>[].obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -28,6 +32,7 @@ class HomeController extends GetxController {
       avatar.value = baseUrl + value;
     });
     getBannerList();
+    getPopularProductList();
   }
 
   updateName(String name) {
@@ -83,6 +88,46 @@ class HomeController extends GetxController {
           }).toList();
     } catch (e) {
       debugPrint('Error fetching banner list: $e');
+    }
+  }
+
+  Future<void> getPopularProductList() async {
+    try {
+      final response = await APICaller.getInstance().get(
+        'v1/product/user/popular',
+      );
+
+      if (response?['code'] != 200 || response?['data'] == null) {
+        Utils.showSnackBar(
+          title: "Thông báo!",
+          message: "Không tìm thấy sản phẩm",
+        );
+        popularProductList.clear();
+        return;
+      }
+
+      final data = response['data'] as List<dynamic>?;
+
+      popularProductList.value =
+          (data ?? []).map((item) {
+            final product = ProductPopu.fromJson(item);
+            final path = product.image;
+
+            if (path?.isNotEmpty == true) {
+              final fullUrl =
+                  path!.startsWith('http')
+                      ? path
+                      : path.startsWith('resources/')
+                      ? '$baseUrl$path'
+                      : '$baseUrl/$path';
+
+              product.image = fullUrl;
+            }
+
+            return product;
+          }).toList();
+    } catch (e) {
+      debugPrint('Error: $e');
     }
   }
 }

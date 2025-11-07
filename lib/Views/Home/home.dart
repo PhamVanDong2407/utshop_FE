@@ -63,6 +63,47 @@ class Home extends StatelessWidget {
     );
   }
 
+  Widget _buildLoadingCards() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: Row(children: List.generate(3, (_) => _ProductCardSkeleton())),
+    );
+  }
+
+  // ignore: non_constant_identifier_names
+  Widget _ProductCardSkeleton() {
+    return Container(
+      width: 160,
+      margin: const EdgeInsets.only(right: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+        ],
+      ),
+      child: Column(
+        children: [
+          Container(height: 180, color: Colors.grey[200]),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(height: 16, width: 100, color: Colors.grey[200]),
+                SizedBox(height: 4),
+                Container(height: 16, width: 60, color: Colors.grey[200]),
+                SizedBox(height: 16),
+                Container(height: 36, color: Colors.grey[200]),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -498,7 +539,9 @@ class Home extends StatelessWidget {
                     : CarouselSlider(
                       options: CarouselOptions(
                         height: 150.0,
-                        autoPlay: controller.bannerList.length > 1, // chỉ chạy khi có nhiều hơn 1 banner
+                        autoPlay:
+                            controller.bannerList.length >
+                            1, // chỉ chạy khi có nhiều hơn 1 banner
                         autoPlayInterval: Duration(seconds: 3),
                         enlargeCenterPage: true,
                         aspectRatio: 16 / 9,
@@ -585,6 +628,7 @@ class Home extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    controller.getPopularProductList();
                     Get.toNamed(Routes.popularProduct);
                   },
                   style: ElevatedButton.styleFrom(
@@ -610,24 +654,30 @@ class Home extends StatelessWidget {
           SizedBox(height: 16),
 
           // Sản phẩm phổ biến
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...popularProducts.map(
-                  (product) => _ProductCard(
-                    name: product['name'],
-                    price: product['price'],
-                    imagePath: product['image'],
-                    isFavorite: product['isFavorite'],
-                    controller: controller,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          Obx(() {
+            if (controller.popularProductList.isEmpty) {
+              return _buildLoadingCards();
+            }
+
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children:
+                    controller.popularProductList.map((product) {
+                      return _ProductCard(
+                        name: product.name ?? 'Không tên',
+                        price: product.price ?? 0,
+                        imagePath:
+                            product.image ?? 'assets/images/placeholder.png',
+                        isFavorite: (product.isFavorite ?? false).obs,
+                        controller: controller,
+                      );
+                    }).toList(),
+              ),
+            );
+          }),
 
           SizedBox(height: 16),
 
@@ -754,7 +804,7 @@ class _ProductCard extends StatelessWidget {
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(12.0),
                   ),
-                  child: Image.asset(
+                  child: Image.network(
                     imagePath,
                     height: 180,
                     width: cardWidth,
