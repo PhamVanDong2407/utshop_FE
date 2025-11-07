@@ -852,12 +852,17 @@ class _ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Tên sản phẩm
-                  Text(
+                // Tên sản phẩm
+                Container( // <-- THÊM DÒNG NÀY
+                  height: 40.0, // <-- THÊM CHIỀU CAO CỐ ĐỊNH
+                  alignment: Alignment.topLeft, // (Tùy chọn) Căn lên trên
+                  child: Text(
                     name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                   ),
+                ),
                   const SizedBox(height: 4),
                   Text(
                     _formatPrice(price),
