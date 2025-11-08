@@ -144,650 +144,662 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.background,
-      body: ListView(
-        children: [
-          SizedBox(height: 20),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            // Phần thanh tìm kiếm sản phẩm
-            child: Row(
-              children: [
-                Expanded(
-                  child: Obx(
-                    () => TextField(
-                      onChanged: controller.onSearchChanged,
-                      decoration: InputDecoration(
-                        hintText: 'Tìm kiếm sản phẩm...',
-                        prefixIcon: Icon(Icons.search, color: Colors.grey),
-                        suffixIcon:
-                            controller.searchQuery.isNotEmpty
-                                ? IconButton(
-                                  icon: Icon(Icons.clear, color: Colors.grey),
-                                  onPressed: controller.clearSearch,
-                                )
-                                : null,
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide(
-                            color: AppColor.primary,
-                            width: 1.0,
+      body: RefreshIndicator(
+        onRefresh: () => controller.refreshData(),
+        color: AppColor.primary,
+        child: ListView(
+          children: [
+            SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              // Phần thanh tìm kiếm sản phẩm
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Obx(
+                      () => TextField(
+                        onChanged: controller.onSearchChanged,
+                        decoration: InputDecoration(
+                          hintText: 'Tìm kiếm sản phẩm...',
+                          prefixIcon: Icon(Icons.search, color: Colors.grey),
+                          suffixIcon:
+                              controller.searchQuery.isNotEmpty
+                                  ? IconButton(
+                                    icon: Icon(Icons.clear, color: Colors.grey),
+                                    onPressed: controller.clearSearch,
+                                  )
+                                  : null,
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(
+                              color: AppColor.primary,
+                              width: 1.0,
+                            ),
                           ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide(
-                            color: AppColor.primary,
-                            width: 2.0,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(
+                              color: AppColor.primary,
+                              width: 2.0,
+                            ),
                           ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide(
-                            color: AppColor.grey,
-                            width: 2.0,
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(
+                              color: AppColor.grey,
+                              width: 2.0,
+                            ),
                           ),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 0,
-                          horizontal: 16,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 0,
+                            horizontal: 16,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(width: 12),
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    height: 45,
-                    width: 45,
-                    decoration: BoxDecoration(
-                      color: AppColor.primary,
-                      shape: BoxShape.circle,
+                  SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      height: 45,
+                      width: 45,
+                      decoration: BoxDecoration(
+                        color: AppColor.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      child: SvgPicture.asset(
+                        'assets/icons/boloc.svg',
+                        height: 40,
+                        width: 40,
+                      ).paddingSymmetric(horizontal: 8),
                     ),
-                    child: SvgPicture.asset(
-                      'assets/icons/boloc.svg',
-                      height: 40,
-                      width: 40,
-                    ).paddingSymmetric(horizontal: 8),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: 16),
-          // Phần bọc lọc nhanh
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Obx(
-                  () => GestureDetector(
-                    onTap: () => controller.selectedFilter.value = 'Tất cả',
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 200),
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color:
-                            controller.selectedFilter.value == 'Tất cả'
-                                ? AppColor.primary.withAlpha(1)
-                                : Colors.transparent,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color:
-                              controller.selectedFilter.value == 'Tất cả'
-                                  ? AppColor.primary
-                                  : Colors.grey.shade300,
-                          width:
-                              controller.selectedFilter.value == 'Tất cả'
-                                  ? 2
-                                  : 1,
-                        ),
-                        boxShadow: [
-                          if (controller.selectedFilter.value == 'Tất cả')
-                            BoxShadow(
-                              color: AppColor.primary.withAlpha(2),
-                              blurRadius: 6,
-                              offset: Offset(0, 2),
-                            ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          ClipOval(
-                            child: Image.asset(
-                              'assets/images/tatca.jpg',
-                              width: 60,
-                              height: 60,
-                              fit: BoxFit.cover,
-                              errorBuilder:
-                                  (context, error, stackTrace) => Container(
-                                    width: 60,
-                                    height: 60,
-                                    color: Colors.grey.shade200,
-                                    child: Center(child: Text('Lỗi')),
-                                  ),
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Tất cả',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight:
-                                  controller.selectedFilter.value == 'Tất cả'
-                                      ? FontWeight.w600
-                                      : FontWeight.w400,
-                              color:
-                                  controller.selectedFilter.value == 'Tất cả'
-                                      ? AppColor.primary
-                                      : AppColor.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 12),
-                Obx(
-                  () => GestureDetector(
-                    onTap: () => controller.selectedFilter.value = 'Nam',
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 200),
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color:
-                            controller.selectedFilter.value == 'Nam'
-                                ? AppColor.primary.withAlpha(1)
-                                : Colors.transparent,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color:
-                              controller.selectedFilter.value == 'Nam'
-                                  ? AppColor.primary
-                                  : Colors.grey.shade300,
-                          width:
-                              controller.selectedFilter.value == 'Nam' ? 2 : 1,
-                        ),
-                        boxShadow: [
-                          if (controller.selectedFilter.value == 'Nam')
-                            BoxShadow(
-                              color: AppColor.primary.withAlpha(2),
-                              blurRadius: 6,
-                              offset: Offset(0, 2),
-                            ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          ClipOval(
-                            child: Image.asset(
-                              'assets/images/nam.jpg',
-                              width: 60,
-                              height: 60,
-                              fit: BoxFit.cover,
-                              errorBuilder:
-                                  (context, error, stackTrace) => Container(
-                                    width: 60,
-                                    height: 60,
-                                    color: Colors.grey.shade200,
-                                    child: Center(child: Text('Lỗi')),
-                                  ),
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Nam',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight:
-                                  controller.selectedFilter.value == 'Nam'
-                                      ? FontWeight.w600
-                                      : FontWeight.w400,
-                              color:
-                                  controller.selectedFilter.value == 'Nam'
-                                      ? AppColor.primary
-                                      : AppColor.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 12),
-                Obx(
-                  () => GestureDetector(
-                    onTap: () => controller.selectedFilter.value = 'Nữ',
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 200),
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color:
-                            controller.selectedFilter.value == 'Nữ'
-                                ? AppColor.primary.withAlpha(1)
-                                : Colors.transparent,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color:
-                              controller.selectedFilter.value == 'Nữ'
-                                  ? AppColor.primary
-                                  : Colors.grey.shade300,
-                          width:
-                              controller.selectedFilter.value == 'Nữ' ? 2 : 1,
-                        ),
-                        boxShadow: [
-                          if (controller.selectedFilter.value == 'Nữ')
-                            BoxShadow(
-                              color: AppColor.primary.withAlpha(2),
-                              blurRadius: 6,
-                              offset: Offset(0, 2),
-                            ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          ClipOval(
-                            child: Image.asset(
-                              'assets/images/nu.jpg',
-                              width: 60,
-                              height: 60,
-                              fit: BoxFit.cover,
-                              errorBuilder:
-                                  (context, error, stackTrace) => Container(
-                                    width: 60,
-                                    height: 60,
-                                    color: Colors.grey.shade200,
-                                    child: Center(child: Text('Lỗi')),
-                                  ),
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Nữ',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight:
-                                  controller.selectedFilter.value == 'Nữ'
-                                      ? FontWeight.w600
-                                      : FontWeight.w400,
-                              color:
-                                  controller.selectedFilter.value == 'Nữ'
-                                      ? AppColor.primary
-                                      : AppColor.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 12),
-                Obx(
-                  () => GestureDetector(
-                    onTap: () => controller.selectedFilter.value = 'Quần',
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 200),
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color:
-                            controller.selectedFilter.value == 'Quần'
-                                ? AppColor.primary.withAlpha(1)
-                                : Colors.transparent,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color:
-                              controller.selectedFilter.value == 'Quần'
-                                  ? AppColor.primary
-                                  : Colors.grey.shade300,
-                          width:
-                              controller.selectedFilter.value == 'Quần' ? 2 : 1,
-                        ),
-                        boxShadow: [
-                          if (controller.selectedFilter.value == 'Quần')
-                            BoxShadow(
-                              color: AppColor.primary.withAlpha(2),
-                              blurRadius: 6,
-                              offset: Offset(0, 2),
-                            ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          ClipOval(
-                            child: Image.asset(
-                              'assets/images/quan.jpg',
-                              width: 60,
-                              height: 60,
-                              fit: BoxFit.cover,
-                              errorBuilder:
-                                  (context, error, stackTrace) => Container(
-                                    width: 60,
-                                    height: 60,
-                                    color: Colors.grey.shade200,
-                                    child: Center(child: Text('Lỗi')),
-                                  ),
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Quần',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight:
-                                  controller.selectedFilter.value == 'Quần'
-                                      ? FontWeight.w600
-                                      : FontWeight.w400,
-                              color:
-                                  controller.selectedFilter.value == 'Quần'
-                                      ? AppColor.primary
-                                      : AppColor.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 12),
-                Obx(
-                  () => GestureDetector(
-                    onTap: () => controller.selectedFilter.value = 'Áo',
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 200),
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color:
-                            controller.selectedFilter.value == 'Áo'
-                                ? AppColor.primary.withAlpha(1)
-                                : Colors.transparent,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color:
-                              controller.selectedFilter.value == 'Áo'
-                                  ? AppColor.primary
-                                  : Colors.grey.shade300,
-                          width:
-                              controller.selectedFilter.value == 'Áo' ? 2 : 1,
-                        ),
-                        boxShadow: [
-                          if (controller.selectedFilter.value == 'Áo')
-                            BoxShadow(
-                              color: AppColor.primary.withAlpha(2),
-                              blurRadius: 6,
-                              offset: Offset(0, 2),
-                            ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          ClipOval(
-                            child: Image.asset(
-                              'assets/images/ao.jpg',
-                              width: 60,
-                              height: 60,
-                              fit: BoxFit.cover,
-                              errorBuilder:
-                                  (context, error, stackTrace) => Container(
-                                    width: 60,
-                                    height: 60,
-                                    color: Colors.grey.shade200,
-                                    child: Center(child: Text('Lỗi')),
-                                  ),
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Áo',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight:
-                                  controller.selectedFilter.value == 'Áo'
-                                      ? FontWeight.w600
-                                      : FontWeight.w400,
-                              color:
-                                  controller.selectedFilter.value == 'Áo'
-                                      ? AppColor.primary
-                                      : AppColor.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 16),
-
-          // Phần Banner
-          SizedBox(height: 16),
-          Obx(
-            () =>
-                controller.bannerList.isEmpty
-                    ? _buildBannerPlaceholder()
-                    : CarouselSlider(
-                      options: CarouselOptions(
-                        height: 150.0,
-                        autoPlay:
-                            controller.bannerList.length >
-                            1, // chỉ chạy khi có nhiều hơn 1 banner
-                        autoPlayInterval: Duration(seconds: 3),
-                        enlargeCenterPage: true,
-                        aspectRatio: 16 / 9,
-                        viewportFraction: 0.85,
-                        initialPage: 0,
-                        reverse: false,
-                        autoPlayCurve: Curves.fastOutSlowIn,
-                        scrollDirection: Axis.horizontal,
-                      ),
-                      items:
-                          controller.bannerList.map((banner) {
-                            return Builder(
-                              builder: (BuildContext context) {
-                                return Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withAlpha(1),
-                                        blurRadius: 4,
-                                        offset: Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    child: Image.network(
-                                      banner.imageUrl ?? '',
-                                      fit: BoxFit.cover,
-                                      loadingBuilder: (
-                                        context,
-                                        child,
-                                        loadingProgress,
-                                      ) {
-                                        if (loadingProgress == null) {
-                                          return child;
-                                        }
-                                        return Container(
-                                          color: Colors.grey[200],
-                                          child: Center(
-                                            child: CircularProgressIndicator(
-                                              valueColor:
-                                                  AlwaysStoppedAnimation(
-                                                    AppColor.primary,
-                                                  ),
-                                              strokeWidth: 2,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              Container(
-                                                color: Colors.grey[200],
-                                                child: Center(
-                                                  child: Icon(
-                                                    Icons.error,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                              ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          }).toList(),
-                    ),
-          ),
-
-          SizedBox(height: 16),
-
-          // Phần sản phẩm phổ biến
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Sản phẩm phổ biến",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Get.toNamed(Routes.popularProduct);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColor.primary,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 6,
-                    ),
-                    minimumSize: Size(0, 32),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
-                  child: Text(
-                    "Xem tất cả",
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 16),
-
-          // Sản phẩm phổ biến
-          Obx(() {
-            if (controller.popularProductList.isEmpty) {
-              return _buildLoadingCards(); // Skeleton cuộn ngang
-            }
-
-            return SingleChildScrollView(
+            SizedBox(height: 16),
+            // Phần bọc lọc nhanh
+            SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children:
-                    controller.popularProductList.map((product) {
-                      return Container(
-                        width: 160,
-                        margin: const EdgeInsets.only(right: 12),
-                        child: _ProductCard(
-                          name: product.name ?? 'Không tên',
-                          price: product.price ?? 0,
-                          imagePath:
-                              product.image ?? 'assets/images/placeholder.png',
-                          isFavorite: (product.isFavorite ?? false).obs,
-                          controller: controller,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Obx(
+                    () => GestureDetector(
+                      onTap: () => controller.selectedFilter.value = 'Tất cả',
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 200),
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color:
+                              controller.selectedFilter.value == 'Tất cả'
+                                  ? AppColor.primary.withAlpha(1)
+                                  : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color:
+                                controller.selectedFilter.value == 'Tất cả'
+                                    ? AppColor.primary
+                                    : Colors.grey.shade300,
+                            width:
+                                controller.selectedFilter.value == 'Tất cả'
+                                    ? 2
+                                    : 1,
+                          ),
+                          boxShadow: [
+                            if (controller.selectedFilter.value == 'Tất cả')
+                              BoxShadow(
+                                color: AppColor.primary.withAlpha(2),
+                                blurRadius: 6,
+                                offset: Offset(0, 2),
+                              ),
+                          ],
                         ),
-                      );
-                    }).toList(),
+                        child: Column(
+                          children: [
+                            ClipOval(
+                              child: Image.asset(
+                                'assets/images/tatca.jpg',
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) => Container(
+                                      width: 60,
+                                      height: 60,
+                                      color: Colors.grey.shade200,
+                                      child: Center(child: Text('Lỗi')),
+                                    ),
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Tất cả',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight:
+                                    controller.selectedFilter.value == 'Tất cả'
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                color:
+                                    controller.selectedFilter.value == 'Tất cả'
+                                        ? AppColor.primary
+                                        : AppColor.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Obx(
+                    () => GestureDetector(
+                      onTap: () => controller.selectedFilter.value = 'Nam',
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 200),
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color:
+                              controller.selectedFilter.value == 'Nam'
+                                  ? AppColor.primary.withAlpha(1)
+                                  : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color:
+                                controller.selectedFilter.value == 'Nam'
+                                    ? AppColor.primary
+                                    : Colors.grey.shade300,
+                            width:
+                                controller.selectedFilter.value == 'Nam'
+                                    ? 2
+                                    : 1,
+                          ),
+                          boxShadow: [
+                            if (controller.selectedFilter.value == 'Nam')
+                              BoxShadow(
+                                color: AppColor.primary.withAlpha(2),
+                                blurRadius: 6,
+                                offset: Offset(0, 2),
+                              ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            ClipOval(
+                              child: Image.asset(
+                                'assets/images/nam.jpg',
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) => Container(
+                                      width: 60,
+                                      height: 60,
+                                      color: Colors.grey.shade200,
+                                      child: Center(child: Text('Lỗi')),
+                                    ),
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Nam',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight:
+                                    controller.selectedFilter.value == 'Nam'
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                color:
+                                    controller.selectedFilter.value == 'Nam'
+                                        ? AppColor.primary
+                                        : AppColor.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Obx(
+                    () => GestureDetector(
+                      onTap: () => controller.selectedFilter.value = 'Nữ',
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 200),
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color:
+                              controller.selectedFilter.value == 'Nữ'
+                                  ? AppColor.primary.withAlpha(1)
+                                  : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color:
+                                controller.selectedFilter.value == 'Nữ'
+                                    ? AppColor.primary
+                                    : Colors.grey.shade300,
+                            width:
+                                controller.selectedFilter.value == 'Nữ' ? 2 : 1,
+                          ),
+                          boxShadow: [
+                            if (controller.selectedFilter.value == 'Nữ')
+                              BoxShadow(
+                                color: AppColor.primary.withAlpha(2),
+                                blurRadius: 6,
+                                offset: Offset(0, 2),
+                              ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            ClipOval(
+                              child: Image.asset(
+                                'assets/images/nu.jpg',
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) => Container(
+                                      width: 60,
+                                      height: 60,
+                                      color: Colors.grey.shade200,
+                                      child: Center(child: Text('Lỗi')),
+                                    ),
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Nữ',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight:
+                                    controller.selectedFilter.value == 'Nữ'
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                color:
+                                    controller.selectedFilter.value == 'Nữ'
+                                        ? AppColor.primary
+                                        : AppColor.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Obx(
+                    () => GestureDetector(
+                      onTap: () => controller.selectedFilter.value = 'Quần',
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 200),
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color:
+                              controller.selectedFilter.value == 'Quần'
+                                  ? AppColor.primary.withAlpha(1)
+                                  : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color:
+                                controller.selectedFilter.value == 'Quần'
+                                    ? AppColor.primary
+                                    : Colors.grey.shade300,
+                            width:
+                                controller.selectedFilter.value == 'Quần'
+                                    ? 2
+                                    : 1,
+                          ),
+                          boxShadow: [
+                            if (controller.selectedFilter.value == 'Quần')
+                              BoxShadow(
+                                color: AppColor.primary.withAlpha(2),
+                                blurRadius: 6,
+                                offset: Offset(0, 2),
+                              ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            ClipOval(
+                              child: Image.asset(
+                                'assets/images/quan.jpg',
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) => Container(
+                                      width: 60,
+                                      height: 60,
+                                      color: Colors.grey.shade200,
+                                      child: Center(child: Text('Lỗi')),
+                                    ),
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Quần',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight:
+                                    controller.selectedFilter.value == 'Quần'
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                color:
+                                    controller.selectedFilter.value == 'Quần'
+                                        ? AppColor.primary
+                                        : AppColor.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Obx(
+                    () => GestureDetector(
+                      onTap: () => controller.selectedFilter.value = 'Áo',
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 200),
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color:
+                              controller.selectedFilter.value == 'Áo'
+                                  ? AppColor.primary.withAlpha(1)
+                                  : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color:
+                                controller.selectedFilter.value == 'Áo'
+                                    ? AppColor.primary
+                                    : Colors.grey.shade300,
+                            width:
+                                controller.selectedFilter.value == 'Áo' ? 2 : 1,
+                          ),
+                          boxShadow: [
+                            if (controller.selectedFilter.value == 'Áo')
+                              BoxShadow(
+                                color: AppColor.primary.withAlpha(2),
+                                blurRadius: 6,
+                                offset: Offset(0, 2),
+                              ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            ClipOval(
+                              child: Image.asset(
+                                'assets/images/ao.jpg',
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) => Container(
+                                      width: 60,
+                                      height: 60,
+                                      color: Colors.grey.shade200,
+                                      child: Center(child: Text('Lỗi')),
+                                    ),
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Áo',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight:
+                                    controller.selectedFilter.value == 'Áo'
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                color:
+                                    controller.selectedFilter.value == 'Áo'
+                                        ? AppColor.primary
+                                        : AppColor.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            );
-          }),
-
-          SizedBox(height: 16),
-
-          // Phần tất cả sản phẩm
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Tất cả sản phẩm",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Get.toNamed(Routes.allProduct);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColor.primary,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 6,
-                    ),
-                    minimumSize: Size(0, 32),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
-                  child: Text(
-                    "Xem tất cả",
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  ),
-                ),
-              ],
             ),
-          ),
-          SizedBox(height: 12),
+            SizedBox(height: 16),
 
-          Obx(() {
-            if (controller.allProductList.isEmpty) {
-              return _buildLoadingGrid();
-            }
+            // Phần Banner
+            SizedBox(height: 16),
+            Obx(
+              () =>
+                  controller.bannerList.isEmpty
+                      ? _buildBannerPlaceholder()
+                      : CarouselSlider(
+                        options: CarouselOptions(
+                          height: 150.0,
+                          autoPlay:
+                              controller.bannerList.length >
+                              1, // chỉ chạy khi có nhiều hơn 1 banner
+                          autoPlayInterval: Duration(seconds: 3),
+                          enlargeCenterPage: true,
+                          aspectRatio: 16 / 9,
+                          viewportFraction: 0.85,
+                          initialPage: 0,
+                          reverse: false,
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          scrollDirection: Axis.horizontal,
+                        ),
+                        items:
+                            controller.bannerList.map((banner) {
+                              return Builder(
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    margin: EdgeInsets.symmetric(
+                                      horizontal: 5.0,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withAlpha(1),
+                                          blurRadius: 4,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      child: Image.network(
+                                        banner.imageUrl ?? '',
+                                        fit: BoxFit.cover,
+                                        loadingBuilder: (
+                                          context,
+                                          child,
+                                          loadingProgress,
+                                        ) {
+                                          if (loadingProgress == null) {
+                                            return child;
+                                          }
+                                          return Container(
+                                            color: Colors.grey[200],
+                                            child: Center(
+                                              child: CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation(
+                                                      AppColor.primary,
+                                                    ),
+                                                strokeWidth: 2,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                Container(
+                                                  color: Colors.grey[200],
+                                                  child: Center(
+                                                    child: Icon(
+                                                      Icons.error,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }).toList(),
+                      ),
+            ),
 
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: controller.allProductList.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.56,
-                  crossAxisSpacing: 12.0,
-                  mainAxisSpacing: 12.0,
-                ),
-                itemBuilder: (context, index) {
-                  final product = controller.allProductList[index];
-                  return _ProductCard(
-                    name: product.name ?? 'Không tên',
-                    price: product.price ?? 0,
-                    imagePath: product.image ?? 'assets/images/placeholder.png',
-                    isFavorite: (product.isFavorite ?? false).obs,
-                    controller: controller,
-                  );
-                },
+            SizedBox(height: 16),
+
+            // Phần sản phẩm phổ biến
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Sản phẩm phổ biến",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Get.toNamed(Routes.popularProduct);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.primary,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 6,
+                      ),
+                      minimumSize: Size(0, 32),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    child: Text(
+                      "Xem tất cả",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ),
+                ],
               ),
-            );
-          }),
+            ),
 
-          SizedBox(height: 20),
-        ],
+            SizedBox(height: 16),
+
+            // Sản phẩm phổ biến
+            Obx(() {
+              if (controller.popularProductList.isEmpty) {
+                return _buildLoadingCards(); // Skeleton cuộn ngang
+              }
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children:
+                      controller.popularProductList.map((product) {
+                        return Container(
+                          width: 160,
+                          margin: const EdgeInsets.only(right: 12),
+                          child: _ProductCard(
+                            name: product.name ?? 'Không tên',
+                            price: product.price ?? 0,
+                            imagePath:
+                                product.image ??
+                                'assets/images/placeholder.png',
+                            isFavorite: (product.isFavorite ?? false).obs,
+                            controller: controller,
+                          ),
+                        );
+                      }).toList(),
+                ),
+              );
+            }),
+
+            SizedBox(height: 16),
+
+            // Phần tất cả sản phẩm
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Tất cả sản phẩm",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Get.toNamed(Routes.allProduct);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.primary,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 6,
+                      ),
+                      minimumSize: Size(0, 32),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    child: Text(
+                      "Xem tất cả",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 12),
+
+            Obx(() {
+              if (controller.allProductList.isEmpty) {
+                return _buildLoadingGrid();
+              }
+
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: controller.allProductList.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.56,
+                    crossAxisSpacing: 12.0,
+                    mainAxisSpacing: 12.0,
+                  ),
+                  itemBuilder: (context, index) {
+                    final product = controller.allProductList[index];
+                    return _ProductCard(
+                      name: product.name ?? 'Không tên',
+                      price: product.price ?? 0,
+                      imagePath:
+                          product.image ?? 'assets/images/placeholder.png',
+                      isFavorite: (product.isFavorite ?? false).obs,
+                      controller: controller,
+                    );
+                  },
+                ),
+              );
+            }),
+
+            SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
@@ -851,6 +863,21 @@ class _ProductCard extends StatelessWidget {
                     height: 180,
                     width: double.infinity,
                     fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        height: 180,
+                        color: Colors.grey[200],
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation(
+                              AppColor.primary,
+                            ),
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      );
+                    },
                     errorBuilder:
                         (context, error, stackTrace) => Container(
                           height: 180,
@@ -870,7 +897,7 @@ class _ProductCard extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: Colors.white.withAlpha(8),
+                          color: Colors.white.withAlpha(150),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -976,11 +1003,13 @@ class _ProductCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // ẢNH VÀ GIÁ
                   Row(
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12.0),
                         child: Image.network(
+                          // <-- SỬA: Dùng network
                           imagePath,
                           height: 120,
                           width: 120,
@@ -999,7 +1028,7 @@ class _ProductCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "500.000 ₫",
+                            _formatPrice(price),
                             style: TextStyle(
                               color: AppColor.primary,
                               fontSize: 20,
@@ -1008,7 +1037,7 @@ class _ProductCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            "Kho: 26",
+                            "Kho: 26", // (Cái này vẫn đang là text cứng)
                             style: TextStyle(
                               color: AppColor.black,
                               fontSize: 14,
@@ -1103,7 +1132,7 @@ class _ProductCard extends StatelessWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 70),
+                  const SizedBox(height: 32),
 
                   // NÚT THÊM GIỎ
                   SizedBox(
@@ -1162,7 +1191,7 @@ class _ProductCard extends StatelessWidget {
               shape: BoxShape.circle,
               color:
                   controller.selectedSize.value == size
-                      ? AppColor.primary.withAlpha(1)
+                      ? AppColor.primary.withAlpha(20)
                       : Colors.grey.shade100,
               border: Border.all(
                 color:
@@ -1174,7 +1203,7 @@ class _ProductCard extends StatelessWidget {
               boxShadow: [
                 if (controller.selectedSize.value == size)
                   BoxShadow(
-                    color: AppColor.primary.withAlpha(3),
+                    color: AppColor.primary.withAlpha(50),
                     blurRadius: 6,
                     offset: Offset(0, 2),
                   ),
@@ -1231,7 +1260,7 @@ class _ProductCard extends StatelessWidget {
                   boxShadow: [
                     if (isSelected)
                       BoxShadow(
-                        color: AppColor.primary.withAlpha(3),
+                        color: AppColor.primary.withAlpha(50),
                         blurRadius: 6,
                         offset: Offset(0, 2),
                       ),
@@ -1280,13 +1309,13 @@ class _ProductCard extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           color:
-              isEnabled ? AppColor.primary.withAlpha(1) : Colors.grey.shade100,
+              isEnabled ? AppColor.primary.withAlpha(20) : Colors.grey.shade100,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: buttonColor, width: 1.5),
           boxShadow: [
             if (isEnabled)
               BoxShadow(
-                color: AppColor.primary.withAlpha(2),
+                color: AppColor.primary.withAlpha(40),
                 blurRadius: 4,
                 offset: Offset(0, 2),
               ),

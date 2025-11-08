@@ -69,6 +69,12 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<void> refreshData() async {
+    getBannerList();
+    getPopularProductList();
+    getAllProductList();
+  }
+
   Future<void> getBannerList() async {
     try {
       final response = await APICaller.getInstance().get('v1/banner');
