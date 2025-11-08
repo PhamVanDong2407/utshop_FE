@@ -110,6 +110,7 @@ class AllProduct extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final product = controller.allProductList[index];
                       return _ProductCard(
+                        uuid: product.uuid ?? '',
                         name: product.name ?? 'Không tên',
                         price: product.price ?? 0,
                         imagePath:
@@ -131,14 +132,15 @@ class AllProduct extends StatelessWidget {
 
 // ==================== PRODUCT CARD  ====================
 class _ProductCard extends StatelessWidget {
+  final String uuid;
   final String name;
   final int price;
   final String imagePath;
   final RxBool isFavorite;
-  // <-- SỬA: Đổi controller
   final AllProductController controller;
 
   const _ProductCard({
+    required this.uuid,
     required this.name,
     required this.price,
     required this.imagePath,
@@ -159,7 +161,7 @@ class _ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routes.productDetail);
+        Get.toNamed(Routes.productDetail, arguments: {'uuid': uuid});
       },
       child: Container(
         decoration: BoxDecoration(

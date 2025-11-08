@@ -25,7 +25,6 @@ class ProductDetailController extends GetxController {
   var availableSizes = <int>{}.obs;
   var availableColors = <int>{}.obs;
 
-  // Maps để chuyển đổi dữ liệu từ API (int) sang UI (String/Color)
   final Map<int, String> sizeMap = {0: 'M', 1: 'L', 2: 'XL'};
   final Map<int, String> colorNameMap = {0: 'Trắng', 1: 'Đỏ', 2: 'Đen'};
   final Map<int, Color> colorHexMap = {

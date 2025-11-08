@@ -100,6 +100,7 @@ class PopularProduct extends StatelessWidget {
             itemBuilder: (context, index) {
               final product = controller.popularProductList[index];
               return _ProductCard(
+                uuid: product.uuid ?? '',
                 name: product.name ?? 'Không tên',
                 price: product.price ?? 0,
                 imagePath: product.image ?? 'assets/images/placeholder.png',
@@ -115,6 +116,7 @@ class PopularProduct extends StatelessWidget {
 }
 
 class _ProductCard extends StatelessWidget {
+  final String uuid;
   final String name;
   final int price;
   final String imagePath;
@@ -122,6 +124,7 @@ class _ProductCard extends StatelessWidget {
   final PopularProductController controller;
 
   const _ProductCard({
+    required this.uuid,
     required this.name,
     required this.price,
     required this.imagePath,
@@ -141,7 +144,7 @@ class _ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Get.toNamed(Routes.productDetail),
+      onTap: () => Get.toNamed(Routes.productDetail, arguments: {'uuid': uuid}),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
