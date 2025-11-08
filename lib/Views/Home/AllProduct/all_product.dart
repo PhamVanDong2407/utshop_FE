@@ -1,47 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:utshop/Controllers/Home/PopularProduct/popular_product_controller.dart';
+import 'package:utshop/Controllers/Home/AllProduct/all_product_controller.dart';
+// <-- SỬA: Đổi controller
 import 'package:utshop/Global/app_color.dart';
 import 'package:utshop/Routes/app_page.dart';
 
 class AllProduct extends StatelessWidget {
   AllProduct({super.key});
 
-  final controller = Get.put(PopularProductController());
+  final controller = Get.put(AllProductController());
 
-  final List<Map<String, dynamic>> popularProducts = [
-    {
-      'name': 'Áo Thun Basic',
-      'price': 150000,
-      'image': 'assets/images/product1.png',
-      'isFavorite': false.obs,
-    },
-    {
-      'name': 'Quần Jeans Slim',
-      'price': 399000,
-      'image': 'assets/images/product2.png',
-      'isFavorite': true.obs,
-    },
-    {
-      'name': 'Váy Chữ A Xinh',
-      'price': 280000,
-      'image': 'assets/images/product3.png',
-      'isFavorite': false.obs,
-    },
-    {
-      'name': 'Áo Khoác Hoodie',
-      'price': 550000,
-      'image': 'assets/images/product4.png',
-      'isFavorite': false.obs,
-    },
-    {
-      'name': 'Giày Sneaker Trắng',
-      'price': 720000,
-      'image': 'assets/images/product5.png',
-      'isFavorite': true.obs,
-    },
-  ];
+  // === SKELETON LOADING ===
+  Widget _buildLoadingGrid() {
+    return GridView.builder(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.58,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+      ),
+      itemCount: 6,
+      itemBuilder: (context, index) => _ProductCardSkeleton(),
+    );
+  }
+
+  // ignore: non_constant_identifier_names
+  Widget _ProductCardSkeleton() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 180,
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(height: 16, width: 100, color: Colors.grey[200]),
+                SizedBox(height: 4),
+                Container(height: 16, width: 60, color: Colors.grey[200]),
+                SizedBox(height: 16),
+                Container(height: 36, color: Colors.grey[200]),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,47 +83,60 @@ class AllProduct extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 10,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.58,
-                  crossAxisSpacing: 12.0,
-                  mainAxisSpacing: 12.0,
-                ),
-                itemBuilder: (context, index) {
-                  final product =
-                      popularProducts[index % popularProducts.length];
-                  return _ProductCard(
-                    name: product['name'],
-                    price: product['price'],
-                    imagePath: product['image'],
-                    isFavorite: product['isFavorite'],
-                    controller: controller,
+      body: RefreshIndicator(
+        onRefresh: () => controller.getAllProductList(),
+        color: AppColor.primary,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                child: Obx(() {
+                  if (controller.allProductList.isEmpty) {
+                    return _buildLoadingGrid();
+                  }
+
+                  return GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: controller.allProductList.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.58,
+                      crossAxisSpacing: 12.0,
+                      mainAxisSpacing: 12.0,
+                    ),
+                    itemBuilder: (context, index) {
+                      final product = controller.allProductList[index];
+                      return _ProductCard(
+                        name: product.name ?? 'Không tên',
+                        price: product.price ?? 0,
+                        imagePath:
+                            product.image ?? 'assets/images/placeholder.png',
+                        isFavorite: (product.isFavorite ?? false).obs,
+                        controller: controller,
+                      );
+                    },
                   );
-                },
+                }),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+// ==================== PRODUCT CARD  ====================
 class _ProductCard extends StatelessWidget {
   final String name;
   final int price;
   final String imagePath;
   final RxBool isFavorite;
-  final PopularProductController controller;
+  // <-- SỬA: Đổi controller
+  final AllProductController controller;
 
   const _ProductCard({
     required this.name,
@@ -121,15 +157,11 @@ class _ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double cardWidth = 160;
-
     return GestureDetector(
       onTap: () {
         Get.toNamed(Routes.productDetail);
       },
       child: Container(
-        width: cardWidth,
-        margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12.0),
@@ -150,11 +182,26 @@ class _ProductCard extends StatelessWidget {
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(12.0),
                   ),
-                  child: Image.asset(
+                  child: Image.network(
                     imagePath,
                     height: 180,
-                    width: cardWidth,
+                    width: double.infinity,
                     fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        height: 180,
+                        color: Colors.grey[200],
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation(
+                              AppColor.primary,
+                            ),
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      );
+                    },
                     errorBuilder:
                         (context, error, stackTrace) => Container(
                           height: 180,
@@ -174,7 +221,7 @@ class _ProductCard extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: Colors.white.withAlpha(8),
+                          color: Colors.white.withAlpha(130),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -191,18 +238,23 @@ class _ProductCard extends StatelessWidget {
                 ),
               ],
             ),
-
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Tên sản phẩm
-                  Text(
-                    name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  Container(
+                    height: 40.0,
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -213,7 +265,7 @@ class _ProductCard extends StatelessWidget {
                       fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 4),
 
                   ElevatedButton(
                     onPressed: () {
@@ -256,6 +308,7 @@ class _ProductCard extends StatelessWidget {
     );
   }
 
+  // ==================== BOTTOM SHEET  ====================
   void _showBuyBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -275,10 +328,8 @@ class _ProductCard extends StatelessWidget {
               Row(
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(12.0),
-                    ),
-                    child: Image.asset(
+                    borderRadius: BorderRadius.circular(12.0),
+                    child: Image.network(
                       imagePath,
                       height: 120,
                       width: 120,
@@ -296,14 +347,16 @@ class _ProductCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // <-- SỬA: Dùng giá động
                       Text(
-                        "500.000 ₫",
+                        _formatPrice(price),
                         style: TextStyle(
                           color: AppColor.primary,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      SizedBox(height: 4),
                       Text(
                         "Kho: 26",
                         style: TextStyle(
@@ -444,7 +497,7 @@ class _ProductCard extends StatelessWidget {
               shape: BoxShape.circle,
               color:
                   controller.selectedSize.value == size
-                      ? AppColor.primary.withAlpha(1)
+                      ? AppColor.primary.withAlpha(20)
                       : Colors.grey.shade100,
               border: Border.all(
                 color:
@@ -456,7 +509,7 @@ class _ProductCard extends StatelessWidget {
               boxShadow: [
                 if (controller.selectedSize.value == size)
                   BoxShadow(
-                    color: AppColor.primary.withAlpha(3),
+                    color: AppColor.primary.withAlpha(50),
                     blurRadius: 6,
                     offset: Offset(0, 2),
                   ),
@@ -513,7 +566,7 @@ class _ProductCard extends StatelessWidget {
                   boxShadow: [
                     if (isSelected)
                       BoxShadow(
-                        color: AppColor.primary.withAlpha(3),
+                        color: AppColor.primary.withAlpha(50),
                         blurRadius: 6,
                         offset: Offset(0, 2),
                       ),
@@ -562,13 +615,13 @@ class _ProductCard extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           color:
-              isEnabled ? AppColor.primary.withAlpha(1) : Colors.grey.shade100,
+              isEnabled ? AppColor.primary.withAlpha(20) : Colors.grey.shade100,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: buttonColor, width: 1.5),
           boxShadow: [
             if (isEnabled)
               BoxShadow(
-                color: AppColor.primary.withAlpha(2),
+                color: AppColor.primary.withAlpha(40),
                 blurRadius: 4,
                 offset: Offset(0, 2),
               ),

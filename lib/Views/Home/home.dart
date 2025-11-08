@@ -13,39 +13,6 @@ class Home extends StatelessWidget {
   final controller = Get.put(HomeController());
   final double horizontalPadding = 20.0;
 
-  final List<Map<String, dynamic>> popularProducts = [
-    {
-      'name': 'Áo Thun Basic',
-      'price': 150000,
-      'image': 'assets/images/product1.png',
-      'isFavorite': false.obs,
-    },
-    {
-      'name': 'Quần Jeans Slim',
-      'price': 399000,
-      'image': 'assets/images/product2.png',
-      'isFavorite': true.obs,
-    },
-    {
-      'name': 'Váy Chữ A Xinh',
-      'price': 280000,
-      'image': 'assets/images/product3.png',
-      'isFavorite': false.obs,
-    },
-    {
-      'name': 'Áo Khoác Hoodie',
-      'price': 550000,
-      'image': 'assets/images/product4.png',
-      'isFavorite': false.obs,
-    },
-    {
-      'name': 'Giày Sneaker Trắng',
-      'price': 720000,
-      'image': 'assets/images/product5.png',
-      'isFavorite': true.obs,
-    },
-  ];
-
   Widget _buildBannerPlaceholder() {
     return Container(
       height: 150,
@@ -63,6 +30,7 @@ class Home extends StatelessWidget {
     );
   }
 
+  // Skeleton cho "Sản phẩm phổ biến" (Cuộn ngang)
   Widget _buildLoadingCards() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -71,6 +39,26 @@ class Home extends StatelessWidget {
     );
   }
 
+  // Skeleton cho "Tất cả sản phẩm" (Lưới)
+  Widget _buildLoadingGrid() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 4,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.56,
+          crossAxisSpacing: 12.0,
+          mainAxisSpacing: 12.0,
+        ),
+        itemBuilder: (context, index) => _GridCardSkeleton(),
+      ),
+    );
+  }
+
+  // Widget Skeleton cho thẻ (Cuộn ngang)
   // ignore: non_constant_identifier_names
   Widget _ProductCardSkeleton() {
     return Container(
@@ -84,8 +72,15 @@ class Home extends StatelessWidget {
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(height: 180, color: Colors.grey[200]),
+          Container(
+            height: 180,
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -104,6 +99,47 @@ class Home extends StatelessWidget {
     );
   }
 
+  // Widget Skeleton cho thẻ (Lưới)
+  // ignore: non_constant_identifier_names
+  Widget _GridCardSkeleton() {
+    return Container(
+      // <-- Không có width hay margin
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 180,
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(height: 16, width: 100, color: Colors.grey[200]),
+                SizedBox(height: 4),
+                Container(height: 16, width: 60, color: Colors.grey[200]),
+                SizedBox(height: 16),
+                Container(height: 36, color: Colors.grey[200]),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // PHẦN BUILD UI CHÍNH
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -628,7 +664,6 @@ class Home extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    controller.getPopularProductList();
                     Get.toNamed(Routes.popularProduct);
                   },
                   style: ElevatedButton.styleFrom(
@@ -656,7 +691,7 @@ class Home extends StatelessWidget {
           // Sản phẩm phổ biến
           Obx(() {
             if (controller.popularProductList.isEmpty) {
-              return _buildLoadingCards();
+              return _buildLoadingCards(); // Skeleton cuộn ngang
             }
 
             return SingleChildScrollView(
@@ -666,13 +701,17 @@ class Home extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children:
                     controller.popularProductList.map((product) {
-                      return _ProductCard(
-                        name: product.name ?? 'Không tên',
-                        price: product.price ?? 0,
-                        imagePath:
-                            product.image ?? 'assets/images/placeholder.png',
-                        isFavorite: (product.isFavorite ?? false).obs,
-                        controller: controller,
+                      return Container(
+                        width: 160,
+                        margin: const EdgeInsets.only(right: 12),
+                        child: _ProductCard(
+                          name: product.name ?? 'Không tên',
+                          price: product.price ?? 0,
+                          imagePath:
+                              product.image ?? 'assets/images/placeholder.png',
+                          isFavorite: (product.isFavorite ?? false).obs,
+                          controller: controller,
+                        ),
                       );
                     }).toList(),
               ),
@@ -716,31 +755,36 @@ class Home extends StatelessWidget {
           ),
           SizedBox(height: 12),
 
-          // Phần tất cả sản phẩm
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 6,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.56,
-                crossAxisSpacing: 12.0,
-                mainAxisSpacing: 12.0,
+          Obx(() {
+            if (controller.allProductList.isEmpty) {
+              return _buildLoadingGrid();
+            }
+
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: controller.allProductList.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.56,
+                  crossAxisSpacing: 12.0,
+                  mainAxisSpacing: 12.0,
+                ),
+                itemBuilder: (context, index) {
+                  final product = controller.allProductList[index];
+                  return _ProductCard(
+                    name: product.name ?? 'Không tên',
+                    price: product.price ?? 0,
+                    imagePath: product.image ?? 'assets/images/placeholder.png',
+                    isFavorite: (product.isFavorite ?? false).obs,
+                    controller: controller,
+                  );
+                },
               ),
-              itemBuilder: (context, index) {
-                final product = popularProducts[index % popularProducts.length];
-                return _ProductCard(
-                  name: product['name'],
-                  price: product['price'],
-                  imagePath: product['image'],
-                  isFavorite: product['isFavorite'],
-                  controller: controller,
-                );
-              },
-            ),
-          ),
+            );
+          }),
 
           SizedBox(height: 20),
         ],
@@ -748,6 +792,8 @@ class Home extends StatelessWidget {
     );
   }
 }
+
+// ==================== PRODUCT CARD WIDGET ====================
 
 class _ProductCard extends StatelessWidget {
   final String name;
@@ -775,15 +821,11 @@ class _ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double cardWidth = 160;
-
     return GestureDetector(
       onTap: () {
         Get.toNamed(Routes.productDetail);
       },
       child: Container(
-        width: cardWidth,
-        margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12.0),
@@ -807,7 +849,7 @@ class _ProductCard extends StatelessWidget {
                   child: Image.network(
                     imagePath,
                     height: 180,
-                    width: cardWidth,
+                    width: double.infinity,
                     fit: BoxFit.cover,
                     errorBuilder:
                         (context, error, stackTrace) => Container(
@@ -845,24 +887,24 @@ class _ProductCard extends StatelessWidget {
                 ),
               ],
             ),
-
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Tên sản phẩm
-                // Tên sản phẩm
-                Container( // <-- THÊM DÒNG NÀY
-                  height: 40.0, // <-- THÊM CHIỀU CAO CỐ ĐỊNH
-                  alignment: Alignment.topLeft, // (Tùy chọn) Căn lên trên
-                  child: Text(
-                    name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  Container(
+                    height: 40.0,
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
                   ),
-                ),
                   const SizedBox(height: 4),
                   Text(
                     _formatPrice(price),
@@ -872,9 +914,7 @@ class _ProductCard extends StatelessWidget {
                       fontSize: 16,
                     ),
                   ),
-
-                  const SizedBox(height: 16),
-
+                  const SizedBox(height: 4),
                   ElevatedButton(
                     onPressed: () {
                       _showBuyBottomSheet(context);
@@ -916,6 +956,7 @@ class _ProductCard extends StatelessWidget {
     );
   }
 
+  // ==================== BOTTOM SHEET ====================
   void _showBuyBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -935,12 +976,11 @@ class _ProductCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ẢNH VÀ GIÁ
                   Row(
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12.0),
-                        child: Image.asset(
+                        child: Image.network(
                           imagePath,
                           height: 120,
                           width: 120,

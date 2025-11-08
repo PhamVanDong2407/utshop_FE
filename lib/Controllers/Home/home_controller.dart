@@ -22,6 +22,9 @@ class HomeController extends GetxController {
   // PopularProduct
   RxList<ProductPopu> popularProductList = <ProductPopu>[].obs;
 
+  // AllProduct
+  RxList<ProductPopu> allProductList = <ProductPopu>[].obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -33,6 +36,7 @@ class HomeController extends GetxController {
     });
     getBannerList();
     getPopularProductList();
+    getAllProductList();
   }
 
   updateName(String name) {
@@ -109,6 +113,46 @@ class HomeController extends GetxController {
       final data = response['data'] as List<dynamic>?;
 
       popularProductList.value =
+          (data ?? []).map((item) {
+            final product = ProductPopu.fromJson(item);
+            final path = product.image;
+
+            if (path?.isNotEmpty == true) {
+              final fullUrl =
+                  path!.startsWith('http')
+                      ? path
+                      : path.startsWith('resources/')
+                      ? '$baseUrl$path'
+                      : '$baseUrl/$path';
+
+              product.image = fullUrl;
+            }
+
+            return product;
+          }).toList();
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
+
+  Future<void> getAllProductList() async {
+    try {
+      final response = await APICaller.getInstance().get(
+        'v1/product/user/list',
+      );
+
+      if (response?['code'] != 200 || response?['data'] == null) {
+        Utils.showSnackBar(
+          title: "Thông báo!",
+          message: "Không tìm thấy sản phẩm",
+        );
+        allProductList.clear();
+        return;
+      }
+
+      final data = response['data'] as List<dynamic>?;
+
+      allProductList.value =
           (data ?? []).map((item) {
             final product = ProductPopu.fromJson(item);
             final path = product.image;
