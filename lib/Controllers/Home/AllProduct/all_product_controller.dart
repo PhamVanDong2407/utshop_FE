@@ -11,6 +11,7 @@ class AllProductController extends GetxController {
   RxString selectedSize = ''.obs;
   RxInt selectedQuantity = 1.obs;
   final String baseUrl = Constant.BASE_URL_IMAGE;
+    var isLoading = true.obs;
 
   // AllProduct
   RxList<ProductPopu> allProductList = <ProductPopu>[].obs;
