@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:utshop/Global/constant.dart';
@@ -15,6 +17,7 @@ class HomeController extends GetxController {
   RxString selectedColor = "".obs;
   RxString selectedSize = ''.obs;
   RxInt selectedQuantity = 1.obs;
+  Timer? _debounce; // Thêm biến này để chờ người dùng gõ xong
 
   // Banner
   RxList<Banners> bannerList = <Banners>[].obs;
@@ -49,10 +52,26 @@ class HomeController extends GetxController {
 
   void clearSearch() {
     searchQuery.value = '';
+    getAllProductList();
   }
 
   void onSearchChanged(String value) {
     searchQuery.value = value;
+
+    // Hủy timer cũ nếu đang chạy
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+    // Bắt đầu timer mới
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      // Chỉ gọi API sau khi người dùng ngừng gõ 500ms
+      getAllProductList();
+    });
+  }
+
+  void setFilter(String filter) {
+    selectedFilter.value = filter;
+    // Gọi API để tải lại danh sách
+    getAllProductList();
   }
 
   void setSize(String size) {
@@ -115,9 +134,16 @@ class HomeController extends GetxController {
   }
 
   Future<void> refreshData() async {
-    getBannerList();
-    getPopularProductList();
-    getAllProductList();
+    // Reset bộ lọc về mặc định
+    selectedFilter.value = 'Tất cả';
+    searchQuery.value = '';
+
+    // Tải lại tất cả dữ liệu song song
+    await Future.wait([
+      getBannerList(),
+      getPopularProductList(),
+      getAllProductList(), // Tải lại danh sách với filter mặc định
+    ]);
   }
 
   Future<void> getBannerList() async {
@@ -188,14 +214,26 @@ class HomeController extends GetxController {
 
   Future<void> getAllProductList() async {
     try {
-      final response = await APICaller.getInstance().get(
-        'v1/product/user/list',
-      );
+      // Xây dựng URL động
+      String apiUrl = 'v1/product/user/list?';
+      
+      // Thêm keyword nếu có
+      if (searchQuery.value.isNotEmpty) {
+        apiUrl += 'keyword=${Uri.encodeComponent(searchQuery.value)}&';
+      }
+      
+      // Thêm category nếu có (và không phải "Tất cả")
+      if (selectedFilter.value != 'Tất cả') {
+        apiUrl += 'category=${Uri.encodeComponent(selectedFilter.value)}&';
+      }
+
+
+      final response = await APICaller.getInstance().get(apiUrl);
 
       if (response?['code'] != 200 || response?['data'] == null) {
         Utils.showSnackBar(
           title: "Thông báo!",
-          message: "Không tìm thấy sản phẩm",
+          message: response?['message'] ?? "Không tìm thấy sản phẩm",
         );
         allProductList.clear();
         return;
@@ -213,16 +251,19 @@ class HomeController extends GetxController {
                   path!.startsWith('http')
                       ? path
                       : path.startsWith('resources/')
-                      ? '$baseUrl$path'
-                      : '$baseUrl/$path';
+                          ? '$baseUrl$path'
+                          : '$baseUrl/$path';
 
               product.image = fullUrl;
             }
+
+            product.isFavorite = (item['is_favorite'] == 1 || item['is_favorite'] == true);
 
             return product;
           }).toList();
     } catch (e) {
       debugPrint('Error: $e');
+      allProductList.clear(); // Xóa danh sách nếu có lỗi
     }
   }
 

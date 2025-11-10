@@ -31,7 +31,6 @@ class Home extends StatelessWidget {
     );
   }
 
-  // Skeleton cho "Sản phẩm phổ biến" (Cuộn ngang)
   Widget _buildLoadingCards() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -40,7 +39,6 @@ class Home extends StatelessWidget {
     );
   }
 
-  // Skeleton cho "Tất cả sản phẩm" (Lưới)
   Widget _buildLoadingGrid() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -59,7 +57,6 @@ class Home extends StatelessWidget {
     );
   }
 
-  // Widget Skeleton cho thẻ (Cuộn ngang)
   // ignore: non_constant_identifier_names
   Widget _ProductCardSkeleton() {
     return Container(
@@ -100,11 +97,9 @@ class Home extends StatelessWidget {
     );
   }
 
-  // Widget Skeleton cho thẻ (Lưới)
   // ignore: non_constant_identifier_names
   Widget _GridCardSkeleton() {
     return Container(
-      // <-- Không có width hay margin
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -140,7 +135,6 @@ class Home extends StatelessWidget {
     );
   }
 
-  // PHẦN BUILD UI CHÍNH
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -149,12 +143,11 @@ class Home extends StatelessWidget {
         onRefresh: () => controller.refreshData(),
         color: AppColor.primary,
         child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(), // Luôn cho phép cuộn
+          physics: const AlwaysScrollableScrollPhysics(),
           children: [
             SizedBox(height: 20),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-              // Phần thanh tìm kiếm sản phẩm
               child: Row(
                 children: [
                   Expanded(
@@ -223,7 +216,6 @@ class Home extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            // Phần bọc lọc nhanh
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -232,7 +224,7 @@ class Home extends StatelessWidget {
                 children: [
                   Obx(
                     () => GestureDetector(
-                      onTap: () => controller.selectedFilter.value = 'Tất cả',
+                      onTap: () => controller.setFilter('Tất cả'),
                       child: AnimatedContainer(
                         duration: Duration(milliseconds: 200),
                         padding: EdgeInsets.all(8),
@@ -301,7 +293,7 @@ class Home extends StatelessWidget {
                   SizedBox(width: 12),
                   Obx(
                     () => GestureDetector(
-                      onTap: () => controller.selectedFilter.value = 'Nam',
+                      onTap: () => controller.setFilter('Nam'),
                       child: AnimatedContainer(
                         duration: Duration(milliseconds: 200),
                         padding: EdgeInsets.all(8),
@@ -370,7 +362,7 @@ class Home extends StatelessWidget {
                   SizedBox(width: 12),
                   Obx(
                     () => GestureDetector(
-                      onTap: () => controller.selectedFilter.value = 'Nữ',
+                      onTap: () => controller.setFilter('Nữ'),
                       child: AnimatedContainer(
                         duration: Duration(milliseconds: 200),
                         padding: EdgeInsets.all(8),
@@ -437,7 +429,7 @@ class Home extends StatelessWidget {
                   SizedBox(width: 12),
                   Obx(
                     () => GestureDetector(
-                      onTap: () => controller.selectedFilter.value = 'Quần',
+                      onTap: () => controller.setFilter('Quần'),
                       child: AnimatedContainer(
                         duration: Duration(milliseconds: 200),
                         padding: EdgeInsets.all(8),
@@ -506,7 +498,7 @@ class Home extends StatelessWidget {
                   SizedBox(width: 12),
                   Obx(
                     () => GestureDetector(
-                      onTap: () => controller.selectedFilter.value = 'Áo',
+                      onTap: () => controller.setFilter('Áo'),
                       child: AnimatedContainer(
                         duration: Duration(milliseconds: 200),
                         padding: EdgeInsets.all(8),
@@ -584,9 +576,7 @@ class Home extends StatelessWidget {
                       : CarouselSlider(
                         options: CarouselOptions(
                           height: 150.0,
-                          autoPlay:
-                              controller.bannerList.length >
-                              1, // chỉ chạy khi có nhiều hơn 1 banner
+                          autoPlay: controller.bannerList.length > 1,
                           autoPlayInterval: Duration(seconds: 3),
                           enlargeCenterPage: true,
                           aspectRatio: 16 / 9,
@@ -664,70 +654,85 @@ class Home extends StatelessWidget {
             SizedBox(height: 16),
 
             // Phần sản phẩm phổ biến
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Sản phẩm phổ biến",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Get.toNamed(Routes.popularProduct);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColor.primary,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 6,
-                      ),
-                      minimumSize: Size(0, 32),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    child: Text(
-                      "Xem tất cả",
-                      style: TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 16),
-
-            // Sản phẩm phổ biến
             Obx(() {
-              if (controller.popularProductList.isEmpty) {
-                return _buildLoadingCards(); // Skeleton cuộn ngang
+              // Chỉ hiển thị khi filter là 'Tất cả'
+              if (controller.selectedFilter.value != 'Tất cả') {
+                return SizedBox.shrink(); // Ẩn đi nếu đang lọc
               }
 
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children:
-                      controller.popularProductList.map((product) {
-                        return Container(
-                          width: 160,
-                          margin: const EdgeInsets.only(right: 12),
-                          child: _ProductCard(
-                            uuid: product.uuid ?? '',
-                            name: product.name ?? 'Không tên',
-                            price: product.price ?? 0,
-                            imagePath:
-                                product.image ??
-                                'assets/images/placeholder.png',
-                            isFavorite: (product.isFavorite ?? false).obs,
-                            controller: controller,
+              // Nếu là 'Tất cả', hiển thị bình thường
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Sản phẩm phổ biến",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
-                        );
-                      }).toList(),
-                ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Get.toNamed(Routes.popularProduct);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColor.primary,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 6,
+                            ),
+                            minimumSize: Size(0, 32),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          child: Text(
+                            "Xem tất cả",
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Obx(() {
+                    if (controller.popularProductList.isEmpty) {
+                      return _buildLoadingCards();
+                    }
+
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: horizontalPadding,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children:
+                            controller.popularProductList.map((product) {
+                              return Container(
+                                width: 160,
+                                margin: const EdgeInsets.only(right: 12),
+                                child: _ProductCard(
+                                  uuid: product.uuid ?? '',
+                                  name: product.name ?? 'Không tên',
+                                  price: product.price ?? 0,
+                                  imagePath:
+                                      product.image ??
+                                      'assets/images/placeholder.png',
+                                  isFavorite: (product.isFavorite ?? false).obs,
+                                  controller: controller,
+                                ),
+                              );
+                            }).toList(),
+                      ),
+                    );
+                  }),
+                ],
               );
             }),
 
@@ -769,10 +774,26 @@ class Home extends StatelessWidget {
             SizedBox(height: 12),
 
             Obx(() {
-              if (controller.allProductList.isEmpty) {
+              // Logic 1: Vẫn hiển thị skeleton nếu đang tải lần đầu
+              if (controller.allProductList.isEmpty &&
+                  controller.selectedFilter.value == 'Tất cả' &&
+                  controller.searchQuery.value.isEmpty) {
                 return _buildLoadingGrid();
               }
 
+              // Logic 2: Hiển thị "Không tìm thấy" nếu lọc không có kết quả
+              if (controller.allProductList.isEmpty) {
+                return Container(
+                  height: 200,
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Không tìm thấy sản phẩm nào.",
+                    style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+                  ),
+                );
+              }
+
+              // Logic 3: Hiển thị GridView
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                 child: GridView.builder(
@@ -817,7 +838,7 @@ class _ProductCard extends StatelessWidget {
   final int price;
   final String imagePath;
   final RxBool isFavorite;
-  final HomeController controller; // Vẫn dùng HomeController cho mục đích chung
+  final HomeController controller;
 
   const _ProductCard({
     required this.uuid,
@@ -995,7 +1016,6 @@ class _ProductCard extends StatelessWidget {
     );
   }
 
-  // ==================== BOTTOM SHEET  ====================
   void _showBuyBottomSheet(
     BuildContext context,
     String uuid,
@@ -1010,7 +1030,7 @@ class _ProductCard extends StatelessWidget {
         initialImage: initialImage,
         initialPrice: initialPrice,
       ),
-      tag: uuid, // Tag duy nhất cho controller này
+      tag: uuid,
     );
 
     showModalBottomSheet(
@@ -1024,11 +1044,9 @@ class _ProductCard extends StatelessWidget {
           minChildSize: 0.5,
           expand: false,
           builder: (_, scrollController) {
-            // 3. Dùng GetBuilder để kết nối với controller
             return GetBuilder<QuickBuyController>(
-              tag: uuid, // Tìm đúng controller bằng tag
+              tag: uuid,
               builder: (qbc) {
-                // 'qbc' là controller của chúng ta
                 return Container(
                   padding: const EdgeInsets.all(20),
                   decoration: const BoxDecoration(
@@ -1042,7 +1060,6 @@ class _ProductCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // ẢNH VÀ GIÁ
                         Obx(
                           () => Row(
                             children: [
@@ -1105,12 +1122,9 @@ class _ProductCard extends StatelessWidget {
                             ],
                           ),
                         ),
-
                         const SizedBox(height: 24),
                         const Divider(height: 1, color: Colors.grey),
                         const SizedBox(height: 12),
-
-                        // MÀU SẮC
                         const Text(
                           "Màu sắc",
                           style: TextStyle(
@@ -1134,8 +1148,8 @@ class _ProductCard extends StatelessWidget {
                             return Text("Sản phẩm không có phân loại màu.");
                           }
                           return Wrap(
-                            spacing: 16.0, // Khoảng cách ngang
-                            runSpacing: 8.0, // Khoảng cách dọc
+                            spacing: 16.0,
+                            runSpacing: 8.0,
                             children:
                                 qbc.colorNameMap.entries
                                     .where(
@@ -1160,10 +1174,7 @@ class _ProductCard extends StatelessWidget {
                                     .toList(),
                           );
                         }),
-
                         const SizedBox(height: 24),
-
-                        // KÍCH THƯỚC
                         const Text(
                           "Kích thước",
                           style: TextStyle(
@@ -1201,10 +1212,7 @@ class _ProductCard extends StatelessWidget {
                                     .toList(),
                           );
                         }),
-
                         const SizedBox(height: 32),
-
-                        // SỐ LƯỢNG
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -1239,7 +1247,6 @@ class _ProductCard extends StatelessWidget {
                                   _quantityButton(
                                     icon: Icons.add,
                                     onTap: qbc.incrementQuantity,
-                                    // Tắt nút cộng nếu chưa chọn biến thể hoặc đã hết hàng
                                     isEnabled:
                                         qbc.currentStock.value > 0 &&
                                         (qbc.selectedSize.value != -1 &&
@@ -1250,10 +1257,7 @@ class _ProductCard extends StatelessWidget {
                             ),
                           ],
                         ),
-
                         const SizedBox(height: 32),
-
-                        // NÚT THÊM GIỎ
                         SizedBox(
                           width: double.infinity,
                           height: 50,
@@ -1300,8 +1304,6 @@ class _ProductCard extends StatelessWidget {
       Get.delete<QuickBuyController>(tag: uuid);
     });
   }
-
-  // --- WIDGETS CON CHO BOTTOM SHEET ---
 
   Widget _sizeOption({
     required QuickBuyController controller,
@@ -1351,7 +1353,6 @@ class _ProductCard extends StatelessWidget {
                           : (isAvailable ? AppColor.black : Colors.grey),
                   fontWeight: FontWeight.w700,
                   fontSize: 16,
-                  // Thêm gạch ngang nếu không khả dụng
                   decoration: !isAvailable ? TextDecoration.lineThrough : null,
                 ),
               ),
@@ -1363,7 +1364,7 @@ class _ProductCard extends StatelessWidget {
   }
 
   Widget _colorOption({
-    required QuickBuyController controller, // <-- SỬA: Dùng controller mới
+    required QuickBuyController controller,
     required int colorValue,
     required Color color,
     required String colorName,
@@ -1415,7 +1416,7 @@ class _ProductCard extends StatelessWidget {
                                     ? AppColor.primary
                                     : Colors.white,
                           )
-                          : (!isAvailable // Nếu không có hàng
+                          : (!isAvailable
                               ? Icon(
                                 Icons.close,
                                 size: 20,
@@ -1424,7 +1425,7 @@ class _ProductCard extends StatelessWidget {
                                         ? Colors.black45
                                         : Colors.white60,
                               )
-                              : null), // Nếu có hàng và không chọn
+                              : null),
                 ),
                 SizedBox(height: 6),
                 Text(
