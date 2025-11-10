@@ -92,10 +92,89 @@ class AllProduct extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                child: Obx(
+                  () => TextField(
+                    onChanged: controller.onSearchChanged,
+                    decoration: InputDecoration(
+                      hintText: 'Tìm kiếm sản phẩm...',
+                      prefixIcon: Icon(Icons.search, color: Colors.grey),
+                      suffixIcon:
+                          controller.searchQuery.isNotEmpty
+                              ? IconButton(
+                                icon: Icon(Icons.clear, color: Colors.grey),
+                                onPressed: controller.clearSearch,
+                              )
+                              : null,
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: BorderSide(
+                          color: AppColor.primary,
+                          width: 1.0,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: BorderSide(
+                          color: AppColor.primary,
+                          width: 2.0,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: BorderSide(
+                          color: AppColor.grey,
+                          width: 2.0,
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 0,
+                        horizontal: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Obx(
+                  () => Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      _buildFilterChip('Tất cả'),
+                      SizedBox(width: 12),
+                      _buildFilterChip('Nam'),
+                      SizedBox(width: 12),
+                      _buildFilterChip('Nữ'),
+                      SizedBox(width: 12),
+                      _buildFilterChip('Quần'),
+                      SizedBox(width: 12),
+                      _buildFilterChip('Áo'),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 child: Obx(() {
-                  if (controller.allProductList.isEmpty &&
-                      controller.isLoading.value) {
+                  if (controller.isLoading.value) {
                     return _buildLoadingGrid();
+                  }
+
+                  if (controller.allProductList.isEmpty) {
+                    return Container(
+                      height: 200,
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Không tìm thấy sản phẩm nào.",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    );
                   }
 
                   return GridView.builder(
@@ -117,6 +196,7 @@ class AllProduct extends StatelessWidget {
                         imagePath:
                             product.image ?? 'assets/images/placeholder.png',
                         isFavorite: (product.isFavorite ?? false).obs,
+                        controller: controller,
                       );
                     },
                   );
@@ -128,15 +208,53 @@ class AllProduct extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildFilterChip(String filterName) {
+    bool isSelected = controller.selectedFilter.value == filterName;
+    return GestureDetector(
+      onTap: () => controller.setFilter(filterName),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 200),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColor.primary : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? AppColor.primary : Colors.grey.shade300,
+            width: 1.5,
+          ),
+          boxShadow:
+              isSelected
+                  ? [
+                    BoxShadow(
+                      color: AppColor.primary.withAlpha(100),
+                      blurRadius: 6,
+                      offset: Offset(0, 2),
+                    ),
+                  ]
+                  : [],
+        ),
+        child: Text(
+          filterName,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            color: isSelected ? Colors.white : AppColor.black,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-// ==================== PRODUCT CARD  ====================
+// ==================== PRODUCT CARD ====================
 class _ProductCard extends StatelessWidget {
   final String uuid;
   final String name;
   final int price;
   final String imagePath;
   final RxBool isFavorite;
+  final AllProductController controller;
 
   const _ProductCard({
     required this.uuid,
@@ -144,6 +262,7 @@ class _ProductCard extends StatelessWidget {
     required this.price,
     required this.imagePath,
     required this.isFavorite,
+    required this.controller,
   });
 
   String _formatPrice(int amount) {
@@ -216,7 +335,7 @@ class _ProductCard extends StatelessWidget {
                   child: Obx(
                     () => GestureDetector(
                       onTap: () {
-                        isFavorite.value = !isFavorite.value;
+                        controller.toggleFavorite(uuid, isFavorite);
                       },
                       child: Container(
                         padding: const EdgeInsets.all(6),
@@ -313,7 +432,7 @@ class _ProductCard extends StatelessWidget {
     );
   }
 
-  // ==================== BOTTOM SHEET  ====================
+  // ==================== BOTTOM SHEET ====================
   void _showBuyBottomSheet(
     BuildContext context,
     String uuid,
@@ -321,7 +440,6 @@ class _ProductCard extends StatelessWidget {
     int initialPrice,
     String initialImage,
   ) {
-    // 1. Tạo controller mới cho bottom sheet này, dùng tag là uuid
     Get.put(
       QuickBuyController(
         uuid: uuid,
@@ -329,7 +447,7 @@ class _ProductCard extends StatelessWidget {
         initialImage: initialImage,
         initialPrice: initialPrice,
       ),
-      tag: uuid, // Tag duy nhất cho controller này
+      tag: uuid,
     );
 
     showModalBottomSheet(
@@ -344,9 +462,8 @@ class _ProductCard extends StatelessWidget {
           expand: false,
           builder: (_, scrollController) {
             return GetBuilder<QuickBuyController>(
-              tag: uuid, // Tìm đúng controller bằng tag
+              tag: uuid,
               builder: (qbc) {
-                // 'qbc' là controller của chúng ta
                 return Container(
                   padding: const EdgeInsets.all(20),
                   decoration: const BoxDecoration(
@@ -360,7 +477,6 @@ class _ProductCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // ẢNH VÀ GIÁ
                         Obx(
                           () => Row(
                             children: [
@@ -423,12 +539,9 @@ class _ProductCard extends StatelessWidget {
                             ],
                           ),
                         ),
-
                         const SizedBox(height: 24),
                         const Divider(height: 1, color: Colors.grey),
                         const SizedBox(height: 12),
-
-                        // MÀU SẮC
                         const Text(
                           "Màu sắc",
                           style: TextStyle(
@@ -478,10 +591,7 @@ class _ProductCard extends StatelessWidget {
                                     .toList(),
                           );
                         }),
-
                         const SizedBox(height: 24),
-
-                        // KÍCH THƯỚC
                         const Text(
                           "Kích thước",
                           style: TextStyle(
@@ -493,7 +603,7 @@ class _ProductCard extends StatelessWidget {
                         Obx(() {
                           if (qbc.isLoading.value &&
                               qbc.availableSizes.isEmpty) {
-                            return SizedBox(height: 48); // Giữ không gian
+                            return SizedBox(height: 48);
                           }
                           if (qbc.availableSizes.isEmpty &&
                               !qbc.isLoading.value) {
@@ -519,10 +629,7 @@ class _ProductCard extends StatelessWidget {
                                     .toList(),
                           );
                         }),
-
                         const SizedBox(height: 32),
-
-                        // SỐ LƯỢNG
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -567,10 +674,7 @@ class _ProductCard extends StatelessWidget {
                             ),
                           ],
                         ),
-
                         const SizedBox(height: 32),
-
-                        // NÚT THÊM GIỎ
                         SizedBox(
                           width: double.infinity,
                           height: 50,
@@ -618,8 +722,6 @@ class _ProductCard extends StatelessWidget {
     });
   }
 
-  // --- WIDGETS CON CHO BOTTOM SHEET  ---
-
   Widget _sizeOption({
     required QuickBuyController controller,
     required String size,
@@ -627,14 +729,13 @@ class _ProductCard extends StatelessWidget {
   }) {
     return Obx(() {
       final isSelected = controller.selectedSize.value == sizeValue;
-      // Kiểm tra xem size này có khả dụng không
       final isAvailable = controller.availableSizes.contains(sizeValue);
 
       return GestureDetector(
         onTap: isAvailable ? () => controller.setSize(sizeValue) : null,
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
-          opacity: isAvailable ? 1.0 : 0.3, // Làm mờ nếu không khả dụng
+          opacity: isAvailable ? 1.0 : 0.3,
           child: AnimatedContainer(
             duration: Duration(milliseconds: 200),
             width: 48,
@@ -669,7 +770,6 @@ class _ProductCard extends StatelessWidget {
                           : (isAvailable ? AppColor.black : Colors.grey),
                   fontWeight: FontWeight.w700,
                   fontSize: 16,
-                  // Thêm gạch ngang nếu không khả dụng
                   decoration: !isAvailable ? TextDecoration.lineThrough : null,
                 ),
               ),
@@ -689,14 +789,13 @@ class _ProductCard extends StatelessWidget {
   }) {
     return Obx(() {
       final isSelected = controller.selectedColor.value == colorValue;
-      // Kiểm tra xem màu này có khả dụng không
       final isAvailable = controller.availableColors.contains(colorValue);
 
       return GestureDetector(
         onTap: isAvailable ? () => controller.setColor(colorValue) : null,
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
-          opacity: isAvailable ? 1.0 : 0.3, // Làm mờ nếu không khả dụng
+          opacity: isAvailable ? 1.0 : 0.3,
           child: Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: Column(
@@ -734,7 +833,7 @@ class _ProductCard extends StatelessWidget {
                                     ? AppColor.primary
                                     : Colors.white,
                           )
-                          : (!isAvailable // Nếu không có hàng
+                          : (!isAvailable
                               ? Icon(
                                 Icons.close,
                                 size: 20,
@@ -743,7 +842,7 @@ class _ProductCard extends StatelessWidget {
                                         ? Colors.black45
                                         : Colors.white60,
                               )
-                              : null), // Nếu có hàng và không chọn
+                              : null),
                 ),
                 SizedBox(height: 6),
                 Text(
