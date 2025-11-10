@@ -898,7 +898,7 @@ class _ProductCard extends StatelessWidget {
                   child: Obx(
                     () => GestureDetector(
                       onTap: () {
-                        isFavorite.value = !isFavorite.value;
+                        controller.toggleFavorite(uuid, isFavorite);
                       },
                       child: Container(
                         padding: const EdgeInsets.all(6),

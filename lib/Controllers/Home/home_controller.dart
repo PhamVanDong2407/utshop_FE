@@ -69,6 +69,51 @@ class HomeController extends GetxController {
     }
   }
 
+  // Hàm này UI sẽ gọi, nó tự động cập nhật UI và gọi API
+  void toggleFavorite(String productUuid, RxBool isFavorite) {
+    // 1. Lấy trạng thái hiện tại
+    bool currentStatus = isFavorite.value;
+
+    // 2. Cập nhật UI ngay lập tức (icon sẽ đổi)
+    isFavorite.value = !currentStatus;
+
+    // 3. Cập nhật trạng thái này trong 2 danh sách gốc
+    // (Quan trọng: Để tránh mất trạng thái khi cuộn)
+    _updateFavoriteStatusInLists(productUuid, !currentStatus);
+
+    // 4. Gọi API tương ứng
+    if (currentStatus == true) {
+      // Nó *đã* là yêu thích -> gọi API xóa
+      removeFavorite(productUuid);
+    } else {
+      // Nó *chưa* là yêu thích -> gọi API thêm
+      addFavorite(productUuid);
+    }
+  }
+
+  // Hàm helper để cập nhật 2 list (tránh mất state khi cuộn)
+  void _updateFavoriteStatusInLists(String productUuid, bool newStatus) {
+    try {
+      int popIndex = popularProductList.indexWhere(
+        (p) => p.uuid == productUuid,
+      );
+      if (popIndex != -1) {
+        popularProductList[popIndex].isFavorite = newStatus;
+      }
+    } catch (e) {
+      debugPrint("Error updating popular list: $e");
+    }
+
+    try {
+      int allIndex = allProductList.indexWhere((p) => p.uuid == productUuid);
+      if (allIndex != -1) {
+        allProductList[allIndex].isFavorite = newStatus;
+      }
+    } catch (e) {
+      debugPrint("Error updating all list: $e");
+    }
+  }
+
   Future<void> refreshData() async {
     getBannerList();
     getPopularProductList();
@@ -178,6 +223,55 @@ class HomeController extends GetxController {
           }).toList();
     } catch (e) {
       debugPrint('Error: $e');
+    }
+  }
+
+  Future<void> addFavorite(String productUuid) async {
+    try {
+      final Map<String, dynamic> body = {"product_uuid": productUuid};
+
+      final response = await APICaller.getInstance().post(
+        'v1/wishlist',
+        body: body,
+      );
+
+      if (response?['code'] == 200) {
+        Utils.showSnackBar(
+          title: "Thành công",
+          message: response?['message'] ?? "Đã thêm vào yêu thích.",
+        );
+      } else {
+        Utils.showSnackBar(
+          title: "Lỗi",
+          message: response?['message'] ?? "Không thể thêm yêu thích.",
+        );
+      }
+    } catch (e) {
+      debugPrint('Error adding favorite: $e');
+      Utils.showSnackBar(title: "Lỗi", message: "Đã xảy ra lỗi: $e");
+    }
+  }
+
+  Future<void> removeFavorite(String productUuid) async {
+    try {
+      final response = await APICaller.getInstance().delete(
+        'v1/wishlist/$productUuid',
+      );
+
+      if (response?['code'] == 200) {
+        Utils.showSnackBar(
+          title: "Thành công",
+          message: response?['message'] ?? "Đã xóa khỏi yêu thích.",
+        );
+      } else {
+        Utils.showSnackBar(
+          title: "Lỗi",
+          message: response?['message'] ?? "Không thể xóa yêu thích.",
+        );
+      }
+    } catch (e) {
+      debugPrint('Error removing favorite: $e');
+      Utils.showSnackBar(title: "Lỗi", message: "Đã xảy ra lỗi: $e");
     }
   }
 }
