@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:utshop/Components/custom_dialog.dart';
 import 'package:utshop/Controllers/Profile/DeliveryAddress/delivery_address_controller.dart';
 import 'package:utshop/Global/app_color.dart';
+import 'package:utshop/Models/DeliveryAdress.dart';
 
 class DeliveryAddress extends StatelessWidget {
   DeliveryAddress({super.key});
@@ -22,134 +23,38 @@ class DeliveryAddress extends StatelessWidget {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
       ),
-      body: ListView(
-        children: [
-          Column(
-            children: [
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(12.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(50),
-                        blurRadius: 6,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Địa chỉ giao hàng",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    _editDeliveryAddress(context);
-                                  },
-                                  icon: Icon(
-                                    Icons.edit_location_alt_outlined,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    CustomDialog.show(
-                                      context: context,
-                                      color: Colors.red,
-                                      title: "Xóa địa chỉ",
-                                      content:
-                                          "Bạn có chắc muốn xóa địa chỉ giao hàng này không?",
-                                      onPressed: () {},
-                                    );
-                                  },
-                                  icon: Icon(Icons.delete, color: Colors.red),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8),
-                        Divider(color: Colors.grey, height: 1),
-                        SizedBox(height: 16),
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text("Tên người nhận:"),
-                                Spacer(),
-                                Text(
-                                  "Phạm Văn Đông",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Text("Số điện thoại"),
-                                Spacer(),
-                                Text(
-                                  "0999999999",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 8),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Địa chỉ:"),
-                                Spacer(),
-                                Expanded(
-                                  flex: 3,
-                                  child: Text(
-                                    "Khu 3, Xã Thạch Bình, Tỉnh Thanh Hóa",
-                                    textAlign: TextAlign.right,
-                                    softWrap: true,
-                                    overflow: TextOverflow.visible,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+      body: RefreshIndicator(
+        onRefresh: () => controller.fetchAddresses(isRefresh: true),
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return Center(
+              child: CircularProgressIndicator(color: AppColor.primary),
+            );
+          }
+
+          if (controller.addressList.isEmpty) {
+            return Stack(
+              children: [
+                ListView(),
+                Center(
+                  child: Text(
+                    "Bạn chưa có địa chỉ nào.\nHãy thêm một địa chỉ mới.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            );
+          }
+
+          return ListView.builder(
+            itemCount: controller.addressList.length,
+            itemBuilder: (context, index) {
+              final address = controller.addressList[index];
+              return _buildAddressCard(context, address);
+            },
+          );
+        }),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -168,6 +73,7 @@ class DeliveryAddress extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: ElevatedButton(
           onPressed: () {
+            controller.clearFormControllers();
             _addDeliveryAddress(context);
           },
           style: ElevatedButton.styleFrom(
@@ -190,40 +96,157 @@ class DeliveryAddress extends StatelessWidget {
     );
   }
 
+  Widget _buildAddressCard(BuildContext context, DeliveryAdd address) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Container(
+        decoration: BoxDecoration(
+          color:
+              address.isDefault == 1
+                  ? Colors.green.shade50
+                  : Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(12.0),
+          border:
+              address.isDefault == 1
+                  ? Border.all(color: Colors.green, width: 1.5)
+                  : null,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(50),
+              blurRadius: 6,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    address.isDefault == 1
+                        ? "Địa chỉ (Mặc định)"
+                        : "Địa chỉ giao hàng",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color:
+                          address.isDefault == 1 ? Colors.green : Colors.black,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          controller.fillFormForEdit(address);
+                          _editDeliveryAddress(context, address.uuid!); //
+                        },
+                        icon: Icon(
+                          Icons.edit_location_alt_outlined,
+                          color: Colors.green,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          CustomDialog.show(
+                            context: context,
+                            color: Colors.red,
+                            title: "Xóa địa chỉ",
+                            content:
+                                "Bạn có chắc muốn xóa địa chỉ giao hàng này không?",
+                            onPressed: () {
+                              Get.back();
+                              controller.deleteAddress(address.uuid!);
+                            },
+                          );
+                        },
+                        icon: Icon(Icons.delete, color: Colors.red),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Divider(color: Colors.grey, height: 1),
+              SizedBox(height: 16),
+              Column(
+                children: [
+                  _infoRow("Tên người nhận:", address.recipientName ?? ''),
+                  SizedBox(height: 8),
+                  _infoRow("Số điện thoại:", address.phone ?? ''),
+                  SizedBox(height: 8),
+                  _infoRow(
+                    "Địa chỉ:",
+                    "${address.address}, ${address.district}, ${address.province}",
+                    isAddress: true,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _infoRow(String label, String value, {bool isAddress = false}) {
+    return Row(
+      crossAxisAlignment:
+          isAddress ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      children: [
+        Text(label, style: TextStyle(color: Colors.grey.shade700)),
+        Spacer(),
+        Expanded(
+          flex: 2,
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            softWrap: true,
+            overflow: TextOverflow.visible,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   void _addDeliveryAddress(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        final screenHeight = MediaQuery.of(context).size.height;
         return Container(
-          height: screenHeight * 0.75,
+          height: screenHeight * 0.85,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 12,
-                offset: Offset(0, -4),
-              ),
-            ],
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 16,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+            ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 5,
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+                // Handle
+                Container(
+                  width: 40,
+                  height: 5,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(4),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -238,7 +261,6 @@ class DeliveryAddress extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(
@@ -248,12 +270,14 @@ class DeliveryAddress extends StatelessWidget {
                           label: "Tên khách hàng",
                           hint: "Nhập tên khách hàng",
                           icon: Icons.person_outline,
+                          controller: controller.recipientNameController,
                         ),
                         _inputField(
                           label: "Số điện thoại",
                           hint: "Nhập số điện thoại",
                           keyboardType: TextInputType.phone,
                           icon: Icons.phone_outlined,
+                          controller: controller.phoneController,
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -269,23 +293,37 @@ class DeliveryAddress extends StatelessWidget {
                           label: "Tỉnh/Thành phố",
                           hint: "Nhập Tỉnh/Thành phố",
                           icon: Icons.location_city_outlined,
+                          controller: controller.provinceController,
                         ),
                         _inputField(
-                          label: "Xã/Thị trấn",
-                          hint: "Nhập Xã/Thị trấn",
+                          label: "Quận/Huyện",
+                          hint: "Nhập Quận/Huyện",
                           icon: Icons.location_on_outlined,
+                          controller: controller.districtController,
                         ),
                         _inputField(
                           label: "Địa chỉ chi tiết",
-                          hint: "Nhập địa chỉ chi tiết",
+                          hint: "Số nhà, tên đường, phường/xã...",
                           icon: Icons.home_outlined,
+                          controller: controller.addressController,
+                        ),
+                        // [CẬP NHẬT] Switch cho "Đặt làm mặc định"
+                        Obx(
+                          () => SwitchListTile(
+                            title: Text("Đặt làm địa chỉ mặc định"),
+                            value: controller.isDefault.value,
+                            onChanged: (val) {
+                              controller.isDefault.value = val;
+                            },
+                            activeColor: Colors.green,
+                            contentPadding: EdgeInsets.zero,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
                 const SizedBox(height: 28),
-
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -299,9 +337,7 @@ class DeliveryAddress extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                      onPressed: () => controller.addAddress(),
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         backgroundColor: Colors.transparent,
@@ -320,7 +356,7 @@ class DeliveryAddress extends StatelessWidget {
                       ),
                     ),
                   ),
-                ).marginOnly(bottom: 20),
+                ),
               ],
             ),
           ),
@@ -329,40 +365,36 @@ class DeliveryAddress extends StatelessWidget {
     );
   }
 
-  void _editDeliveryAddress(BuildContext context) {
+  void _editDeliveryAddress(BuildContext context, String addressUuid) {
+    final screenHeight = MediaQuery.of(context).size.height;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        final screenHeight = MediaQuery.of(context).size.height;
         return Container(
-          height: screenHeight * 0.75,
+          height: screenHeight * 0.85,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 12,
-                offset: Offset(0, -4),
-              ),
-            ],
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 16,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+            ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 5,
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+                Container(
+                  width: 40,
+                  height: 5,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(4),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -377,7 +409,6 @@ class DeliveryAddress extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(
@@ -387,12 +418,14 @@ class DeliveryAddress extends StatelessWidget {
                           label: "Tên khách hàng",
                           hint: "Nhập tên khách hàng",
                           icon: Icons.person_outline,
+                          controller: controller.recipientNameController,
                         ),
                         _inputField(
                           label: "Số điện thoại",
                           hint: "Nhập số điện thoại",
                           keyboardType: TextInputType.phone,
                           icon: Icons.phone_outlined,
+                          controller: controller.phoneController,
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -408,23 +441,36 @@ class DeliveryAddress extends StatelessWidget {
                           label: "Tỉnh/Thành phố",
                           hint: "Nhập Tỉnh/Thành phố",
                           icon: Icons.location_city_outlined,
+                          controller: controller.provinceController,
                         ),
                         _inputField(
-                          label: "Xã/Thị trấn",
-                          hint: "Nhập Xã/Thị trấn",
+                          label: "Quận/Huyện",
+                          hint: "Nhập Quận/Huyện",
                           icon: Icons.location_on_outlined,
+                          controller: controller.districtController,
                         ),
                         _inputField(
                           label: "Địa chỉ chi tiết",
-                          hint: "Nhập địa chỉ chi tiết",
+                          hint: "Số nhà, tên đường, phường/xã...",
                           icon: Icons.home_outlined,
+                          controller: controller.addressController,
+                        ),
+                        Obx(
+                          () => SwitchListTile(
+                            title: Text("Đặt làm địa chỉ mặc định"),
+                            value: controller.isDefault.value,
+                            onChanged: (val) {
+                              controller.isDefault.value = val;
+                            },
+                            activeColor: Colors.green,
+                            contentPadding: EdgeInsets.zero,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
                 const SizedBox(height: 28),
-
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -438,9 +484,7 @@ class DeliveryAddress extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                      onPressed: () => controller.updateAddress(addressUuid),
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         backgroundColor: Colors.transparent,
@@ -459,7 +503,7 @@ class DeliveryAddress extends StatelessWidget {
                       ),
                     ),
                   ),
-                ).paddingOnly(bottom: 20),
+                ),
               ],
             ),
           ),
@@ -474,6 +518,7 @@ class DeliveryAddress extends StatelessWidget {
     IconData? icon,
     TextInputType? keyboardType,
     String? Function(String?)? validator,
+    TextEditingController? controller,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 14.0),
@@ -490,6 +535,7 @@ class DeliveryAddress extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           TextFormField(
+            controller: controller,
             keyboardType: keyboardType,
             validator: validator,
             decoration: InputDecoration(
