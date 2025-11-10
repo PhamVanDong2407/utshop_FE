@@ -1,4 +1,4 @@
-import 'package:flutter_svg/svg.dart';
+// import 'package:flutter_svg/svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:intl/intl.dart';
 import 'package:utshop/Controllers/Home/home_controller.dart';
@@ -195,23 +195,23 @@ class Home extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 12),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      height: 45,
-                      width: 45,
-                      decoration: BoxDecoration(
-                        color: AppColor.primary,
-                        shape: BoxShape.circle,
-                      ),
-                      child: SvgPicture.asset(
-                        'assets/icons/boloc.svg',
-                        height: 40,
-                        width: 40,
-                      ).paddingSymmetric(horizontal: 8),
-                    ),
-                  ),
+                  // SizedBox(width: 12),
+                  // GestureDetector(
+                  //   onTap: () {},
+                  //   child: Container(
+                  //     height: 45,
+                  //     width: 45,
+                  //     decoration: BoxDecoration(
+                  //       color: AppColor.primary,
+                  //       shape: BoxShape.circle,
+                  //     ),
+                  //     child: SvgPicture.asset(
+                  //       'assets/icons/boloc.svg',
+                  //       height: 40,
+                  //       width: 40,
+                  //     ).paddingSymmetric(horizontal: 8),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
