@@ -675,36 +675,44 @@ class _ProductCard extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 32),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColor.primary,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
+                        Obx(
+                          () => SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed:
+                                  (qbc.currentStock.value > 0 &&
+                                          qbc.selectedSize.value != -1 &&
+                                          qbc.selectedColor.value != -1)
+                                      ? qbc
+                                          .addToCart // Gọi hàm mới
+                                      : null,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColor.primary,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
                               ),
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.add_shopping_cart,
-                                  color: Colors.white,
-                                  size: 18,
-                                ),
-                                SizedBox(width: 6),
-                                Text(
-                                  'Thêm vào giỏ hàng',
-                                  style: TextStyle(
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.add_shopping_cart,
                                     color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
+                                    size: 18,
                                   ),
-                                ),
-                              ],
+                                  SizedBox(width: 6),
+                                  Text(
+                                    'Thêm vào giỏ hàng',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
