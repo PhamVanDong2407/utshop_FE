@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:utshop/Controllers/Wishlist/wishlish_controller.dart';
 import 'package:utshop/Global/app_color.dart';
 
@@ -114,7 +115,7 @@ class Wishlish extends StatelessWidget {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                "${(double.tryParse(product.price ?? '0') ?? 0).toStringAsFixed(0)} ₫",
+                                _formatPrice(product.price),
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -157,5 +158,16 @@ class Wishlish extends StatelessWidget {
         }),
       ),
     );
+  }
+
+  String _formatPrice(dynamic value) {
+    final formatter = NumberFormat.currency(
+      locale: 'vi_VN',
+      symbol: '₫',
+      decimalDigits: 0,
+    );
+
+    final amount = double.tryParse(value?.toString() ?? '0') ?? 0;
+    return formatter.format(amount);
   }
 }
