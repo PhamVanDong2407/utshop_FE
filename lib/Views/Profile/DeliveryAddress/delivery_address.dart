@@ -296,7 +296,7 @@ class DeliveryAddress extends StatelessWidget {
                           controller: controller.provinceController,
                         ),
                         _inputField(
-                          label: "Quận/Huyện",
+                          label: "Xã/Thị trấn",
                           hint: "Nhập Quận/Huyện",
                           icon: Icons.location_on_outlined,
                           controller: controller.districtController,
