@@ -36,9 +36,14 @@ class ProductDetailController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Lấy UUID từ trang trước
-    uuid = Get.arguments['uuid'];
-    getDetailProduct();
+    final arguments = Get.arguments as Map<String, dynamic>?;
+    if (arguments != null && arguments.containsKey('uuid')) {
+      uuid = arguments['uuid'];
+      getDetailProduct();
+    } else {
+      isLoading(false);
+      Get.snackbar("Lỗi", "Không tìm thấy UUID sản phẩm.");
+    }
   }
 
   // Cập nhật vị trí slide ảnh
@@ -70,26 +75,31 @@ class ProductDetailController extends GetxController {
   void _updateAvailableOptions() {
     final variants = product.value.variants ?? [];
 
-    if (selectedSize.value != -1 && selectedColor.value == -1) {
-      // Đã chọn Size, lọc ra Color khả dụng
-      availableColors.value =
+    var sizesWithStock =
+        variants.where((v) => (v.stock ?? 0) > 0).map((v) => v.size!).toSet();
+    var colorsWithStock =
+        variants.where((v) => (v.stock ?? 0) > 0).map((v) => v.color!).toSet();
+
+    if (selectedSize.value != -1) {
+      colorsWithStock =
           variants
               .where((v) => v.size == selectedSize.value && (v.stock ?? 0) > 0)
               .map((v) => v.color!)
               .toSet();
-    } else if (selectedSize.value == -1 && selectedColor.value != -1) {
-      // Đã chọn Color, lọc ra Size khả dụng
-      availableSizes.value =
+    }
+
+    if (selectedColor.value != -1) {
+      sizesWithStock =
           variants
               .where(
                 (v) => v.color == selectedColor.value && (v.stock ?? 0) > 0,
               )
               .map((v) => v.size!)
               .toSet();
-    } else if (selectedSize.value == -1 && selectedColor.value == -1) {
-      // Chưa chọn gì, hiển thị tất cả
-      _resetAvailableOptions();
     }
+
+    availableSizes.assignAll(sizesWithStock);
+    availableColors.assignAll(colorsWithStock);
 
     _updateStock();
   }
@@ -102,10 +112,8 @@ class ProductDetailController extends GetxController {
       );
       currentStock.value = variant?.stock ?? 0;
     } else {
-      // Nếu chưa chọn đủ, hiển thị tổng tồn kho
       currentStock.value = product.value.totalStock ?? 0;
     }
-    // Reset số lượng mua nếu vượt quá tồn kho
     if (selectedQuantity.value > currentStock.value && currentStock.value > 0) {
       selectedQuantity.value = currentStock.value;
     } else if (currentStock.value == 0 && selectedQuantity.value > 1) {
@@ -116,19 +124,27 @@ class ProductDetailController extends GetxController {
   // Đặt lại các tùy chọn về ban đầu
   void _resetAvailableOptions() {
     final variants = product.value.variants ?? [];
-    availableSizes.value = variants.map((v) => v.size!).toSet();
-    availableColors.value = variants.map((v) => v.color!).toSet();
+    availableSizes.assignAll(variants.map((v) => v.size!).toSet());
+    availableColors.assignAll(variants.map((v) => v.color!).toSet());
   }
 
   // Tăng số lượng mua
   void incrementQuantity() {
-    // Chỉ cho phép tăng nếu nhỏ hơn tồn kho
-    int stock =
-        (selectedSize.value != -1 && selectedColor.value != -1)
-            ? currentStock.value
-            : product.value.totalStock ?? 0;
+    int stock = currentStock.value;
+
+    if (selectedSize.value == -1 || selectedColor.value == -1) {
+      Utils.showSnackBar(
+        title: "Thông báo",
+        message: "Vui lòng chọn đầy đủ phân loại!",
+      );
+      return;
+    }
 
     if (stock == 0) {
+      Utils.showSnackBar(
+        title: "Thông báo",
+        message: "Phân loại này đã hết hàng!",
+      );
       selectedQuantity.value = 1;
       return;
     }
@@ -186,7 +202,6 @@ class ProductDetailController extends GetxController {
       }
 
       isFavorite.value = product.value.isFavorite ?? false;
-
       currentStock.value = product.value.totalStock ?? 0;
 
       _resetAvailableOptions();
@@ -195,6 +210,134 @@ class ProductDetailController extends GetxController {
       Utils.showSnackBar(title: "Lỗi", message: "Đã xảy ra lỗi: $e");
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<void> addToCart() async {
+    if (selectedColor.value == -1 || selectedSize.value == -1) {
+      Utils.showSnackBar(
+        title: "Thông báo",
+        message: "Vui lòng chọn đầy đủ màu sắc và kích cỡ.",
+      );
+      return;
+    }
+
+    if (currentStock.value == 0) {
+      Utils.showSnackBar(
+        title: "Thông báo",
+        message: "Phân loại này đã hết hàng.",
+      );
+      return;
+    }
+
+    final selectedVariant = product.value.variants?.firstWhereOrNull(
+      (v) => v.color == selectedColor.value && v.size == selectedSize.value,
+    );
+
+    if (selectedVariant == null || selectedVariant.variantUuid == null) {
+      Utils.showSnackBar(
+        title: "Lỗi",
+        message: "Không tìm thấy biến thể sản phẩm này.",
+      );
+      return;
+    }
+
+    final body = {
+      "variant_uuid": selectedVariant.variantUuid,
+      "quantity": selectedQuantity.value,
+    };
+
+    try {
+      final response = await APICaller.getInstance().post(
+        'v1/cart',
+        body: body,
+      );
+
+      if (response?['code'] == 200) {
+        Utils.showSnackBar(
+          title: "Thành công",
+          message: response?['message'] ?? "Đã thêm vào giỏ hàng!",
+        );
+      } else {
+        Utils.showSnackBar(
+          title: "Lỗi",
+          message: response?['message'] ?? "Không thể thêm vào giỏ.",
+        );
+      }
+    } catch (e) {
+      debugPrint('Error adding to cart: $e');
+      Utils.showSnackBar(title: "Lỗi", message: "Đã xảy ra lỗi: $e");
+    }
+  }
+
+  /// Hàm này UI sẽ gọi, nó tự động cập nhật UI và gọi API
+  void toggleFavorite() {
+    // 1. Lấy trạng thái hiện tại
+    bool currentStatus = isFavorite.value;
+
+    // 2. Cập nhật UI ngay lập tức (icon sẽ đổi)
+    isFavorite.value = !currentStatus;
+
+    // 3. Gọi API tương ứng
+    if (currentStatus == true) {
+      // Nó *đã* là yêu thích -> gọi API xóa
+      removeFavorite(uuid);
+    } else {
+      // Nó *chưa* là yêu thích -> gọi API thêm
+      addFavorite(uuid);
+    }
+  }
+
+  Future<void> addFavorite(String productUuid) async {
+    try {
+      final Map<String, dynamic> body = {"product_uuid": productUuid};
+
+      final response = await APICaller.getInstance().post(
+        'v1/wishlist',
+        body: body,
+      );
+
+      if (response?['code'] == 200) {
+        Utils.showSnackBar(
+          title: "Thành công",
+          message: response?['message'] ?? "Đã thêm vào yêu thích.",
+        );
+      } else {
+        Utils.showSnackBar(
+          title: "Lỗi",
+          message: response?['message'] ?? "Không thể thêm yêu thích.",
+        );
+        isFavorite.value = false;
+      }
+    } catch (e) {
+      debugPrint('Error adding favorite: $e');
+      Utils.showSnackBar(title: "Lỗi", message: "Đã xảy ra lỗi: $e");
+      isFavorite.value = false;
+    }
+  }
+
+  Future<void> removeFavorite(String productUuid) async {
+    try {
+      final response = await APICaller.getInstance().delete(
+        'v1/wishlist/$productUuid',
+      );
+
+      if (response?['code'] == 200) {
+        Utils.showSnackBar(
+          title: "Thành công",
+          message: response?['message'] ?? "Đã xóa khỏi yêu thích.",
+        );
+      } else {
+        Utils.showSnackBar(
+          title: "Lỗi",
+          message: response?['message'] ?? "Không thể xóa yêu thích.",
+        );
+        isFavorite.value = true;
+      }
+    } catch (e) {
+      debugPrint('Error removing favorite: $e');
+      Utils.showSnackBar(title: "Lỗi", message: "Đã xảy ra lỗi: $e");
+      isFavorite.value = true;
     }
   }
 }

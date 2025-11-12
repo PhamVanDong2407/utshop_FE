@@ -32,6 +32,15 @@ class ProductDetail extends StatelessWidget {
           );
         }
 
+        if (controller.product.value.name == null) {
+          return Center(
+            child: Text(
+              "Không thể tải sản phẩm",
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          );
+        }
+
         final product = controller.product.value;
         final images = product.images ?? [];
 
@@ -120,7 +129,9 @@ class ProductDetail extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "${controller.currentPage.value + 1}/${images.length}",
+                      images.isEmpty
+                          ? "0/0"
+                          : "${controller.currentPage.value + 1}/${images.length}",
                       style: TextStyle(
                         fontSize: 12,
                         color: AppColor.grey,
@@ -151,10 +162,11 @@ class ProductDetail extends StatelessWidget {
                     // Nút Yêu thích
                     Obx(
                       () => GestureDetector(
+                        // === SỬA LẠI: GỌI toggleFavorite ===
                         onTap: () {
-                          controller.isFavorite.value =
-                              !controller.isFavorite.value;
+                          controller.toggleFavorite();
                         },
+                        // === KẾT THÚC SỬA ===
                         child: AnimatedScale(
                           scale: controller.isFavorite.value ? 1.1 : 1.0,
                           duration: const Duration(milliseconds: 200),
@@ -243,7 +255,7 @@ class ProductDetail extends StatelessWidget {
                         Icon(Icons.star, color: Colors.amber, size: 20),
                         SizedBox(width: 4),
                         Text(
-                          "4.5",
+                          "4.5", // (Chưa có API)
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
@@ -398,7 +410,10 @@ class ProductDetail extends StatelessWidget {
                           _quantityButton(
                             icon: Icons.add,
                             onTap: controller.incrementQuantity,
-                            isEnabled: controller.currentStock.value > 0,
+                            isEnabled:
+                                controller.currentStock.value > 0 &&
+                                controller.selectedSize.value != -1 &&
+                                controller.selectedColor.value != -1,
                           ),
                         ],
                       ),
@@ -428,21 +443,29 @@ class ProductDetail extends StatelessWidget {
             Expanded(
               child: SizedBox(
                 height: 45,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColor.primary,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                child: Obx(
+                  () => ElevatedButton(
+                    onPressed:
+                        (controller.currentStock.value > 0 &&
+                                controller.selectedSize.value != -1 &&
+                                controller.selectedColor.value != -1)
+                            ? controller.addToCart
+                            : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.primary,
+                      disabledBackgroundColor: Colors.grey.shade400,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    'Thêm vào giỏ hàng',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
+                    child: Text(
+                      'Thêm vào giỏ hàng',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -515,7 +538,10 @@ class ProductDetail extends StatelessWidget {
               child: Text(
                 size,
                 style: TextStyle(
-                  color: isSelected ? AppColor.primary : AppColor.black,
+                  color:
+                      isSelected
+                          ? AppColor.primary
+                          : (isAvailable ? AppColor.black : Colors.grey),
                   fontWeight: FontWeight.w600,
                   fontSize: 12,
                   decoration:
