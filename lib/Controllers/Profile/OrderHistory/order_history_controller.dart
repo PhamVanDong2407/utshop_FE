@@ -14,6 +14,9 @@ class OrderHistoryController extends GetxController {
   final Map<int, String> sizeMap = {0: 'M', 1: 'L', 2: 'XL'};
   final Map<int, String> colorNameMap = {0: 'Trắng', 1: 'Đỏ', 2: 'Đen'};
 
+  // Mua lại
+  var isBuyingAgain = <String, bool>{}.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -65,6 +68,42 @@ class OrderHistoryController extends GetxController {
       );
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<void> buyAgain(String orderUuid) async {
+    if (isBuyingAgain[orderUuid] == true) return;
+
+    isBuyingAgain[orderUuid] = true;
+    try {
+      final body = {"order_uuid": orderUuid};
+      final response = await APICaller.getInstance().post(
+        "v1/order/re-order",
+        body: body,
+      );
+
+      if (response != null && response['code'] == 200) {
+        Utils.showSnackBar(
+          title: "Thành công",
+          message: "Đã thêm sản phẩm vào giỏ hàng.",
+          backgroundColor: Colors.green,
+        );
+      } else {
+        Utils.showSnackBar(
+          title: "Lỗi",
+          message: response?['message'] ?? "Không thể mua lại đơn hàng.",
+          backgroundColor: Colors.red,
+        );
+      }
+    } catch (e) {
+      debugPrint("Error buying again: $e");
+      Utils.showSnackBar(
+        title: "Lỗi",
+        message: "Đã có lỗi xảy ra: $e",
+        backgroundColor: Colors.red,
+      );
+    } finally {
+      isBuyingAgain[orderUuid] = false;
     }
   }
 

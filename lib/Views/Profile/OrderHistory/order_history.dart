@@ -222,6 +222,49 @@ class OrderHistory extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: Obx(() {
+                  final isLoading =
+                      controller.isBuyingAgain[order.uuid] ?? false;
+
+                  return ElevatedButton(
+                    onPressed:
+                        isLoading
+                            ? null
+                            : () {
+                              controller.buyAgain(order.uuid!);
+                            },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.primary,
+                      disabledBackgroundColor: Colors.grey.shade400,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child:
+                        isLoading
+                            ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 3,
+                              ),
+                            )
+                            : Text(
+                              "Mua lại",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                  );
+                }),
+              ),
             ],
           ),
         ),
