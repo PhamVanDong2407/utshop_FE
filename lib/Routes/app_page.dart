@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:utshop/Controllers/Cart/ConfirmOrder/order_success_page.dart';
 import 'package:utshop/Views/Cart/ConfirmOrder/confirm_order.dart';
 import 'package:utshop/Views/Cart/cart.dart';
 import 'package:utshop/Views/ForgotPassword/forgot_password.dart';
@@ -54,5 +55,6 @@ class AppPage {
     GetPage(name: Routes.deliveryAddress, page: () => DeliveryAddress()),
     GetPage(name: Routes.voucher, page: ()=> Voucher()),
     GetPage(name: Routes.changePassword, page: () => ChangePassword()),
+    GetPage(name: Routes.orderSuccess, page: () => const OrderSuccessPage()),
   ];
 }

@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:utshop/Models/DeliveryAdress.dart';
 import 'package:utshop/Models/Vouchers.dart';
 import 'package:utshop/Models/Carts.dart';
+import 'package:utshop/Routes/app_page.dart';
 import 'package:utshop/Services/api_caller.dart';
 import 'package:utshop/Utils/utils.dart';
+import 'vietqr_payment_sheet.dart';
 
 enum PaymentMethod { cod, vietqr }
 
@@ -28,25 +30,24 @@ class ConfirmOrderController extends GetxController {
   var totalPagesVC = 1.obs;
   final int _limitVC = 10;
 
-  // --- SỬA ĐỔI CHÍNH ---
-  // 1. Danh sách sản phẩm được truyền từ giỏ hàng
+  // Sản phẩm
   RxList<Items> itemsToCheckout = <Items>[].obs;
 
-  // 2. Các biến tính toán tổng tiền
-  var subtotalAmount = 0.0.obs; // Tổng tiền hàng
-  var shippingFee = 30000.0.obs; // Phí ship (ví dụ, bạn có thể thay đổi)
-  var voucherDiscount = 0.0.obs; // Tiền giảm giá
-  var totalAmount = 0.0.obs; // TỔNG CUỐI CÙNG
-  // -----------------------
+  // Tính toán
+  var subtotalAmount = 0.0.obs;
+  var shippingFee = 30000.0.obs; // Phí ship (ví dụ)
+  var voucherDiscount = 0.0.obs;
+  var totalAmount = 0.0.obs;
+
+  // Biến loading cho nút đặt hàng
+  var isPlacingOrder = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-
-    // --- NHẬN DỮ LIỆU SẢN PHẨM TỪ GIỎ HÀNG ---
+    // 1. Nhận sản phẩm từ giỏ hàng
     if (Get.arguments != null && Get.arguments is List<Items>) {
       itemsToCheckout.value = Get.arguments;
-      // Tính toán tổng tiền ngay sau khi có danh sách sản phẩm
       calculateTotals();
     } else {
       Get.back();
@@ -55,46 +56,37 @@ class ConfirmOrderController extends GetxController {
         message: "Không tìm thấy sản phẩm để thanh toán.",
       );
     }
-    // ----------------------------------------
 
-    // Chạy song song 2 API
-    Future.wait([getListAddresses(), getListVouchers()])
-        .then((_) {
-          isLoading.value = false;
-        })
-        .catchError((e) {
-          isLoading.value = false;
-          debugPrint("Lỗi khi tải dữ liệu ban đầu: $e");
-        });
+    // 2. Tải song song địa chỉ và voucher
+    Future.wait([
+      getListAddresses(),
+      getListVouchers(),
+      // ignore: body_might_complete_normally_catch_error
+    ]).then((_) => isLoading.value = false).catchError((e) {
+      isLoading.value = false;
+      debugPrint("Lỗi khi tải dữ liệu ban đầu: $e");
+    });
 
-    // --- TỰ ĐỘNG TÍNH LẠI TỔNG KHI VOUCHER THAY ĐỔI ---
+    // 3. Tự động tính lại tổng tiền khi voucher thay đổi
     ever(selectedVoucher, (_) => calculateTotals());
   }
 
-  /// --- HÀM TÍNH TOÁN TỔNG TIỀN ---
+  /// Tính toán tổng tiền
   void calculateTotals() {
-    // 1. Tính tổng tiền hàng (Subtotal)
     subtotalAmount.value = itemsToCheckout.fold(
       0.0,
       (sum, item) => sum + (item.subtotal ?? 0.0),
     );
 
-    // 2. Tính tiền giảm giá từ Voucher
-    voucherDiscount.value = 0.0; // Reset
+    voucherDiscount.value = 0.0;
     final voucher = selectedVoucher.value;
     if (voucher != null && voucher.discountValue != null) {
       double discountValue = double.tryParse(voucher.discountValue!) ?? 0;
-
-      // Type 1: Giảm tiền cố định (VND)
       if (voucher.discountType == 1) {
         voucherDiscount.value = discountValue;
-      }
-      // Type 2: Giảm theo phần trăm (%)
-      else if (voucher.discountType == 2) {
+      } else if (voucher.discountType == 2) {
         double percentage = discountValue / 100;
         double discount = subtotalAmount.value * percentage;
-
-        // Kiểm tra giảm tối đa (nếu có)
         double maxDiscount =
             double.tryParse(voucher.maxDiscountAmount ?? '0') ?? 0;
         if (maxDiscount > 0 && discount > maxDiscount) {
@@ -103,17 +95,12 @@ class ConfirmOrderController extends GetxController {
         voucherDiscount.value = discount;
       }
     }
-
-    // 3. Tính tổng cuối cùng
     totalAmount.value =
         (subtotalAmount.value + shippingFee.value) - voucherDiscount.value;
-
-    // Đảm bảo tổng không bị âm
-    if (totalAmount.value < 0) {
-      totalAmount.value = 0.0;
-    }
+    if (totalAmount.value < 0) totalAmount.value = 0.0;
   }
 
+  /// Format tiền tệ
   String formatCurrency(num? amount) {
     if (amount == null) return "0 ₫";
     final formatter = NumberFormat.currency(
@@ -124,6 +111,7 @@ class ConfirmOrderController extends GetxController {
     return formatter.format(amount);
   }
 
+  /// Lấy text phân loại
   String getVariantText(Items item) {
     final Map<int, String> sizeMap = {0: 'M', 1: 'L', 2: 'XL'};
     final Map<int, String> colorNameMap = {0: 'Trắng', 1: 'Đỏ', 2: 'Đen'};
@@ -133,9 +121,7 @@ class ConfirmOrderController extends GetxController {
   }
 
   void selectPaymentMethod(PaymentMethod? method) {
-    if (method != null) {
-      selectedPaymentMethod.value = method;
-    }
+    if (method != null) selectedPaymentMethod.value = method;
   }
 
   void selectAddress(DeliveryAdd newAddress) {
@@ -144,7 +130,88 @@ class ConfirmOrderController extends GetxController {
 
   void selectVoucher(ListVouchers newVoucher) {
     selectedVoucher.value = newVoucher;
-    // calculateTotals() sẽ tự động chạy do `ever()`
+  }
+
+  /// Hàm xử lý đặt hàng
+  Future<void> processCheckout() async {
+    if (isPlacingOrder.value) return;
+    if (selectedAddress.value == null) {
+      Utils.showSnackBar(
+        title: "Thông báo",
+        message: "Vui lòng chọn địa chỉ giao hàng",
+      );
+      return;
+    }
+
+    isPlacingOrder.value = true;
+    try {
+      Map<String, dynamic> orderPayload = {
+        "address_uuid": selectedAddress.value!.uuid,
+        "items":
+            itemsToCheckout
+                .map(
+                  (item) => {
+                    "variant_uuid": item.variantUuid,
+                    "quantity": item.quantity,
+                    "price": item.price,
+                  },
+                )
+                .toList(),
+        "voucher_uuid": selectedVoucher.value?.uuid,
+        "subtotal": subtotalAmount.value,
+        "shipping_fee": shippingFee.value,
+        "discount": voucherDiscount.value,
+        "total_amount": totalAmount.value,
+        "payment_method":
+            selectedPaymentMethod.value == PaymentMethod.cod ? "cod" : "vietqr",
+      };
+
+      final response = await APICaller.getInstance().post(
+        "v1/order/create",
+        body: orderPayload,
+      );
+
+      if (response != null &&
+          (response['code'] == 201 || response['code'] == 200)) {
+        final orderData = response['data'];
+        final String orderCode = orderData['order_code'];
+        final double orderTotal = (orderData['total_amount'] as num).toDouble();
+
+        if (orderData['payment_method'] == "cod") {
+          Get.offAllNamed(Routes.orderSuccess, arguments: orderCode);
+        } else if (orderData['payment_method'] == "vietqr") {
+          _showVietQRSheet(orderCode, orderTotal);
+        }
+      } else {
+        Utils.showSnackBar(
+          title: "Lỗi",
+          message: response?['message'] ?? "Tạo đơn hàng thất bại",
+        );
+      }
+    } catch (e) {
+      Utils.showSnackBar(title: "Lỗi", message: "Đã có lỗi xảy ra: $e");
+    } finally {
+      isPlacingOrder.value = false;
+    }
+  }
+
+  /// Hàm mở Bottom Sheet VietQR
+  void _showVietQRSheet(String orderCode, double totalAmount) {
+    const String myBankBin = "970422"; // Mã BIN của MB Bank
+    const String myBankAccount = "0982788253"; // STK của bạn
+    const String myAccountName = "PHAM VAN DONG"; // Tên chủ TK
+
+    Get.bottomSheet(
+      VietQRPaymentSheet(
+        orderCode: orderCode,
+        totalAmount: totalAmount,
+        bankBin: myBankBin,
+        bankAccount: myBankAccount,
+        accountName: myAccountName,
+      ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+    );
   }
 
   Future<void> getListAddresses({bool isRefresh = false}) async {
@@ -152,12 +219,10 @@ class ConfirmOrderController extends GetxController {
       currentPage.value = 1;
       isLoading.value = true;
     }
-
     try {
       String apiUrl =
           'v1/delivery_address?page=${currentPage.value}&limit=$_limit';
       final response = await APICaller.getInstance().get(apiUrl);
-
       if (response?['code'] != 200 || response?['data'] == null) {
         Utils.showSnackBar(
           title: "Thông báo!",
@@ -167,31 +232,26 @@ class ConfirmOrderController extends GetxController {
         selectedAddress.value = null;
         return;
       }
-
       final data = response['data'] as List<dynamic>?;
       final pagination = response['pagination'];
       final List<DeliveryAdd> newAddresses =
           (data ?? []).map((item) => DeliveryAdd.fromJson(item)).toList();
-
       if (isRefresh) {
         addressList.value = newAddresses;
       } else {
         addressList.assignAll(newAddresses);
       }
-
       if (addressList.isNotEmpty) {
         var defaultAddr = addressList.firstWhere(
           (addr) => addr.isDefault == 1,
           orElse: () => addressList.first,
         );
-        // Chỉ tự động chọn nếu chưa có gì được chọn (để tôn trọng lựa chọn trước đó)
         if (selectedAddress.value == null) {
           selectedAddress.value = defaultAddr;
         }
       } else {
         selectedAddress.value = null;
       }
-
       if (pagination != null) {
         totalPages.value = pagination['totalPage'] ?? 1;
       }
@@ -213,12 +273,10 @@ class ConfirmOrderController extends GetxController {
       currentPageVC.value = 1;
       isLoading.value = true;
     }
-
     try {
       String apiUrl =
           'v1/voucher/user-list?page=${currentPageVC.value}&limit=$_limitVC';
       final response = await APICaller.getInstance().get(apiUrl);
-
       if (response?['code'] != 200 || response?['data'] == null) {
         Utils.showSnackBar(
           title: "Thông báo!",
@@ -228,18 +286,15 @@ class ConfirmOrderController extends GetxController {
         voucherList.clear();
         return;
       }
-
       final data = response['data'] as List<dynamic>?;
       final pagination = response['pagination'];
       final List<ListVouchers> newVouchers =
           (data ?? []).map((item) => ListVouchers.fromJson(item)).toList();
-
       if (isRefresh) {
         voucherList.value = newVouchers;
       } else {
         voucherList.assignAll(newVouchers);
       }
-
       if (pagination != null) {
         totalPagesVC.value = pagination['totalPage'] ?? 1;
       }

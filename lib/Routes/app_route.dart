@@ -25,6 +25,7 @@ abstract class Routes {
   static const deliveryAddress = _Paths.deliveryAddress;
   static const voucher = _Paths.voucher;
   static const changePassword = _Paths.changePassword;
+  static const orderSuccess = _Paths.orderSuccess;    
 }
 
 abstract class _Paths {
@@ -52,4 +53,5 @@ abstract class _Paths {
   static const String deliveryAddress = '/delivery-address';
   static const String voucher = '/voucher';
   static const String changePassword = '/change-password';
+  static const String orderSuccess = '/order-success';  
 }

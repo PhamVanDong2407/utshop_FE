@@ -29,6 +29,7 @@ class ConfirmOrder extends StatelessWidget {
           children: [
             SizedBox(height: 20),
 
+            // --- HỘP ĐỊA CHỈ ---
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
@@ -103,55 +104,20 @@ class ConfirmOrder extends StatelessWidget {
                         ].where((s) => s != null && s.isNotEmpty).join(', ');
                         return Column(
                           children: [
-                            Row(
-                              children: [
-                                Text("Tên người nhận:"),
-                                Spacer(),
-                                Text(
-                                  address.recipientName ?? "--",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
+                            _buildInfoRow(
+                              "Tên người nhận:",
+                              address.recipientName ?? "--",
                             ),
                             SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Text("Số điện thoại:"),
-                                Spacer(),
-                                Text(
-                                  address.phone ?? "--",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
+                            _buildInfoRow(
+                              "Số điện thoại:",
+                              address.phone ?? "--",
                             ),
                             SizedBox(height: 8),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Địa chỉ:"),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: Text(
-                                    fullAddress.isNotEmpty ? fullAddress : "--",
-                                    textAlign: TextAlign.right,
-                                    softWrap: true,
-                                    overflow: TextOverflow.visible,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            _buildInfoRow(
+                              "Địa chỉ:",
+                              fullAddress.isNotEmpty ? fullAddress : "--",
+                              isAddress: true,
                             ),
                           ],
                         );
@@ -164,6 +130,7 @@ class ConfirmOrder extends StatelessWidget {
 
             SizedBox(height: 16),
 
+            // --- HỘP TÓM TẮT ĐƠN HÀNG ---
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
@@ -185,7 +152,6 @@ class ConfirmOrder extends StatelessWidget {
                     children: [
                       Obx(
                         () => Text(
-                          // Bọc Obx để cập nhật số lượng
                           "Tóm tắt đơn hàng (${controller.itemsToCheckout.length} sản phẩm)",
                           style: TextStyle(
                             fontSize: 16,
@@ -217,6 +183,7 @@ class ConfirmOrder extends StatelessWidget {
 
             SizedBox(height: 16),
 
+            // --- HỘP MÃ GIẢM GIÁ ---
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
@@ -306,6 +273,7 @@ class ConfirmOrder extends StatelessWidget {
 
             SizedBox(height: 16),
 
+            // --- HỘP CHI TIẾT THANH TOÁN ---
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
@@ -337,100 +305,36 @@ class ConfirmOrder extends StatelessWidget {
                         SizedBox(height: 8),
                         Divider(color: Colors.grey, height: 1),
                         SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Text(
-                              "Tổng tiền hàng:",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              controller.formatCurrency(
-                                controller.subtotalAmount.value,
-                              ),
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ],
+                        _buildPaymentDetailRow(
+                          "Tổng tiền hàng:",
+                          controller.formatCurrency(
+                            controller.subtotalAmount.value,
+                          ),
+                          color: Colors.blue,
                         ),
                         SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Text(
-                              "Phí giao hàng:",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              controller.formatCurrency(
-                                controller.shippingFee.value,
-                              ),
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
+                        _buildPaymentDetailRow(
+                          "Phí giao hàng:",
+                          controller.formatCurrency(
+                            controller.shippingFee.value,
+                          ),
                         ),
                         SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Text(
-                              "Giảm giá voucher: ",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "-${controller.formatCurrency(controller.voucherDiscount.value)}",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ],
+                        _buildPaymentDetailRow(
+                          "Giảm giá voucher: ",
+                          "-${controller.formatCurrency(controller.voucherDiscount.value)}",
+                          color: Colors.green,
                         ),
                         SizedBox(height: 8),
                         Divider(color: Colors.grey, height: 1),
                         SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Text(
-                              "Tổng thanh toán:",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              controller.formatCurrency(
-                                controller.totalAmount.value,
-                              ),
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ],
+                        _buildPaymentDetailRow(
+                          "Tổng thanh toán:",
+                          controller.formatCurrency(
+                            controller.totalAmount.value,
+                          ),
+                          color: Colors.red,
+                          isTotal: true,
                         ),
                       ],
                     ),
@@ -441,6 +345,7 @@ class ConfirmOrder extends StatelessWidget {
 
             SizedBox(height: 16),
 
+            // --- HỘP PHƯƠNG THỨC THANH TOÁN ---
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
@@ -496,6 +401,8 @@ class ConfirmOrder extends StatelessWidget {
                               contentPadding: EdgeInsets.zero,
                               activeColor: AppColor.primary,
                             ),
+
+                            // --- RADIO VIETQR ---
                             RadioListTile<PaymentMethod>(
                               title: const Text(
                                 'Chuyển khoản bằng mã VietQR',
@@ -530,6 +437,7 @@ class ConfirmOrder extends StatelessWidget {
         ).paddingOnly(bottom: 40),
       ),
 
+      // --- THANH ĐẶT HÀNG ---
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: const BoxDecoration(
@@ -573,22 +481,41 @@ class ConfirmOrder extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 height: 48,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColor.primary,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                child: Obx(
+                  () => ElevatedButton(
+                    onPressed:
+                        controller.isPlacingOrder.value
+                            ? null
+                            : () {
+                              controller.processCheckout();
+                            },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.primary,
+                      disabledBackgroundColor: Colors.grey.shade400,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
-                  ),
-                  child: const Text(
-                    'Đặt hàng ngay',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    // Hiển thị vòng xoay hoặc text
+                    child:
+                        controller.isPlacingOrder.value
+                            ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 3,
+                              ),
+                            )
+                            : const Text(
+                              'Đặt hàng ngay',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                   ),
                 ),
               ),
@@ -599,13 +526,66 @@ class ConfirmOrder extends StatelessWidget {
     );
   }
 
+  Widget _buildInfoRow(String label, String value, {bool isAddress = false}) {
+    return Row(
+      crossAxisAlignment:
+          isAddress ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      children: [
+        Text("$label:"),
+        SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            softWrap: true,
+            overflow: TextOverflow.visible,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPaymentDetailRow(
+    String label,
+    String value, {
+    Color? color,
+    bool isTotal = false,
+  }) {
+    return Row(
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: isTotal ? 16 : 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        Spacer(),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: isTotal ? 18 : 16,
+            fontWeight: FontWeight.bold,
+            color: color ?? Colors.black,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // --- WIDGET TÓM TẮT SẢN PHẨM ---
   Widget _buildOrderItem(Items item) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Hình ảnh
           Container(
             width: 80,
             height: 80,
@@ -627,7 +607,6 @@ class ConfirmOrder extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          // Thông tin
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -672,6 +651,7 @@ class ConfirmOrder extends StatelessWidget {
     );
   }
 
+  // --- BOTTOM SHEET CHỌN ĐỊA CHỈ ---
   void _editDeliveryAddress(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -864,6 +844,7 @@ class ConfirmOrder extends StatelessWidget {
   }
 }
 
+// --- CLASS BOTTOM SHEET CHỌN VOUCHER ---
 class CouponListBottomSheet extends StatelessWidget {
   final ConfirmOrderController controller;
   const CouponListBottomSheet({super.key, required this.controller});
@@ -991,6 +972,7 @@ class CouponListBottomSheet extends StatelessWidget {
   }
 }
 
+// --- CLASS ITEM CỦA VOUCHER ---
 class CouponItem extends StatelessWidget {
   final String code;
   final String title;
