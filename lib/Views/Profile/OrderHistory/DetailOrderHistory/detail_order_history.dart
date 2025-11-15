@@ -215,34 +215,59 @@ class DetailOrderHistory extends StatelessWidget {
           ),
         );
       }),
-      bottomNavigationBar: Container(
-        width: double.infinity,
-        height: 70,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: SizedBox(
+      bottomNavigationBar: Obx(() {
+        // Lấy trạng thái hiện tại (nếu có)
+        final status = controller.orderDetail.value?.status;
+
+        // Kiểm tra xem có được phép hủy không
+        final bool canCancel =
+            (status == 'pending' || status == 'awaiting_payment');
+
+        // Nếu đang tải hoặc không thể hủy, không hiển thị gì cả
+        if (controller.isLoading.value || !canCancel) {
+          return SizedBox.shrink(); // Ẩn nút
+        }
+
+        // Nếu có thể hủy, hiển thị nút
+        return Container(
           width: double.infinity,
-          height: 50,
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColor.red,
-              elevation: 0,
-              padding: EdgeInsets.zero,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+          height: 70,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton(
+              onPressed: () {
+                // Gọi hàm cancelOrder trong controller
+                controller.cancelOrder();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColor.red,
+                elevation: 0,
+                padding: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
               ),
-            ),
-            child: Text(
-              'Hủy đơn hàng',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
+              // Hiển thị loading nếu đang hủy
+              child:
+                  controller.isCancelling.value
+                      ? CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 3,
+                      )
+                      : Text(
+                        'Hủy đơn hàng',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
             ),
           ),
-        ),
-      ).paddingOnly(bottom: 20),
+        ).paddingOnly(bottom: 20);
+      }),
     );
   }
 

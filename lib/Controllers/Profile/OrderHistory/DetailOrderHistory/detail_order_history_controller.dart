@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:utshop/Global/app_color.dart';
 import 'package:utshop/Global/constant.dart';
 import 'package:utshop/Models/DetailOrderHistorys.dart';
 import 'package:utshop/Services/api_caller.dart';
@@ -9,6 +10,8 @@ import 'package:utshop/Utils/utils.dart';
 class DetailOrderHistoryController extends GetxController {
   var isLoading = true.obs;
   var orderDetail = Rx<DetailOrderHis?>(null);
+
+  var isCancelling = false.obs;
 
   late String orderUuid;
 
@@ -69,6 +72,59 @@ class DetailOrderHistoryController extends GetxController {
       );
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<void> cancelOrder() async {
+    Get.defaultDialog(
+      title: "Xác nhận hủy",
+      middleText: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+      textConfirm: "Đồng ý",
+      textCancel: "Không",
+      confirmTextColor: Colors.white,
+      buttonColor: AppColor.red,
+      onConfirm: () async {
+        Get.back();
+        await _performCancel();
+      },
+      onCancel: () {},
+    );
+  }
+
+  Future<void> _performCancel() async {
+    if (isCancelling.value) {
+      return;
+    }
+
+    isCancelling.value = true;
+    try {
+      final response = await APICaller.getInstance().post(
+        "v1/order/cancel/$orderUuid",
+        body: {},
+      );
+
+      if (response != null && response['code'] == 200) {
+        Utils.showSnackBar(
+          title: "Thành công",
+          message: "Đã hủy đơn hàng thành công.",
+          backgroundColor: Colors.green,
+        );
+        fetchOrderDetail(); // Tải lại chi tiết
+      } else {
+        Utils.showSnackBar(
+          title: "Hủy thất bại",
+          message: response?['message'] ?? "Không thể hủy đơn hàng này.",
+          backgroundColor: Colors.red,
+        );
+      }
+    } catch (e) {
+      Utils.showSnackBar(
+        title: "Lỗi",
+        message: "Đã có lỗi xảy ra: $e",
+        backgroundColor: Colors.red,
+      );
+    } finally {
+      isCancelling.value = false;
     }
   }
 
