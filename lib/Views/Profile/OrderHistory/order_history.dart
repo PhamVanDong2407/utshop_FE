@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:utshop/Controllers/Profile/OrderHistory/order_history_controller.dart';
 import 'package:utshop/Global/app_color.dart';
+import 'package:utshop/Models/OrderHistorys.dart';
 import 'package:utshop/Routes/app_page.dart';
 
 class OrderHistory extends StatelessWidget {
@@ -22,192 +23,208 @@ class OrderHistory extends StatelessWidget {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
       ),
-      body: ListView(
-        children: [
-          SizedBox(height: 20),
-          GestureDetector(
-            onTap: () {
-              Get.toNamed(Routes.detailOrderHistory);
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  borderRadius: BorderRadius.circular(12.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withAlpha(50),
-                      blurRadius: 6,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            "Đơn hàng ",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            "#1",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: AppColor.primary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 8),
-                      Divider(color: Colors.grey, height: 1),
-                      SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(8.0),
-                              // Thêm Image.network hoặc Asset để hiển thị ảnh thật
-                              // image: DecorationImage(
-                              //   image: NetworkImage('URL_HINH_ANH_SAN_PHAM'),
-                              //   fit: BoxFit.cover,
-                              // ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  offset: const Offset(0, -2),
-                                  blurRadius: 6,
-                                ),
-                              ],
-                            ),
-                            child: const Icon(Icons.image, color: Colors.grey),
-                          ),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return Center(
+            child: CircularProgressIndicator(color: AppColor.primary),
+          );
+        }
 
-                          const SizedBox(width: 15),
-
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Tên Sản Phẩm',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Số lượng: ',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColor.grey,
-                                    ),
-                                  ),
-                                  Text(
-                                    '1',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColor.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Phân loại:',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColor.grey,
-                                    ),
-                                  ),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    'Đỏ/XL',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColor.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Trạng thái: ',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColor.grey,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Đang xử lý',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColor.primary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16),
-                      Divider(color: Colors.grey, height: 1),
-                      SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Tổng tiền:",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: AppColor.black,
-                            ),
-                          ),
-                          Text(
-                            "500.000 ₫",
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                              color: AppColor.primary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+        if (controller.orderList.isEmpty) {
+          return RefreshIndicator(
+            onRefresh: controller.fetchOrderHistory,
+            color: AppColor.primary,
+            child: Stack(
+              children: [
+                ListView(),
+                const Center(
+                  child: Text(
+                    "Bạn chưa có đơn hàng nào.",
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                 ),
-              ),
+              ],
             ),
+          );
+        }
+
+        return RefreshIndicator(
+          onRefresh: controller.fetchOrderHistory,
+          color: AppColor.primary,
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            itemCount: controller.orderList.length,
+            itemBuilder: (context, index) {
+              final order = controller.orderList[index];
+              return _buildOrderItem(order);
+            },
           ),
-        ],
+        );
+      }),
+    );
+  }
+
+  Widget _buildOrderItem(OrderHis order) {
+    return GestureDetector(
+      onTap: () {
+        Get.toNamed(Routes.detailOrderHistory, arguments: order.uuid);
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(50),
+              blurRadius: 6,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    "Đơn hàng ",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Text(
+                    "#${order.orderCode ?? 'N/A'}",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColor.primary,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Divider(color: Colors.grey, height: 1),
+              SizedBox(height: 16),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child:
+                          (order.mainImageUrl != null &&
+                                  order.mainImageUrl!.isNotEmpty)
+                              ? Image.network(
+                                order.mainImageUrl!,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) => const Icon(
+                                      Icons.image,
+                                      color: Colors.grey,
+                                    ),
+                              )
+                              : const Icon(Icons.image, color: Colors.grey),
+                    ),
+                  ),
+                  const SizedBox(width: 15),
+                  // Thông tin
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          order.productName ?? 'Sản phẩm',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        if ((int.tryParse(order.totalItemsCount ?? '0') ?? 0) >
+                            1)
+                          Text(
+                            'và ${(int.tryParse(order.totalItemsCount!) ?? 1) - 1} sản phẩm khác...',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontStyle: FontStyle.italic,
+                              color: AppColor.grey,
+                            ),
+                          ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Phân loại: ${controller.getVariantText(order)}',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: AppColor.grey,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Text(
+                              'Trạng thái: ',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: AppColor.grey,
+                              ),
+                            ),
+                            Text(
+                              controller.getStatusText(order.status),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: controller.getStatusColor(order.status),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Divider(color: Colors.grey, height: 1),
+              SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Tổng tiền:",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColor.black,
+                    ),
+                  ),
+                  Text(
+                    controller.getFormattedTotal(order.totalAmount),
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: AppColor.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
