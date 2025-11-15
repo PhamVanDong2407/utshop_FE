@@ -288,8 +288,13 @@ class ConfirmOrderController extends GetxController {
       }
       final data = response['data'] as List<dynamic>?;
       final pagination = response['pagination'];
+
       final List<ListVouchers> newVouchers =
-          (data ?? []).map((item) => ListVouchers.fromJson(item)).toList();
+          (data ?? [])
+              .map((item) => ListVouchers.fromJson(item))
+              .where((voucher) => voucher.status == "valid")
+              .toList();
+
       if (isRefresh) {
         voucherList.value = newVouchers;
       } else {
