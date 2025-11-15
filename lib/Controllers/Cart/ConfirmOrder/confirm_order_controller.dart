@@ -7,7 +7,7 @@ import 'package:utshop/Models/Carts.dart';
 import 'package:utshop/Routes/app_page.dart';
 import 'package:utshop/Services/api_caller.dart';
 import 'package:utshop/Utils/utils.dart';
-import 'vietqr_payment_sheet.dart';
+import '../../../Views/Cart/ConfirmOrder/vietqr_payment_sheet.dart';
 
 enum PaymentMethod { cod, vietqr }
 
